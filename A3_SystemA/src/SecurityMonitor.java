@@ -1,15 +1,15 @@
 
-import InstrumentationPackage.*;
-import MessagePackage.*;
-import java.util.*;
+import InstrumentationPackage.Indicator;
+import InstrumentationPackage.MessageWindow;
+import MessagePackage.Message;
+import MessagePackage.MessageManagerInterface;
+import MessagePackage.MessageQueue;
 
 class SecurityMonitor extends Thread
 {
 	private MessageManagerInterface em = null;	
 	private String MsgMgrIP = null;				
-	private int WindowState = 0;
-	private int DoorState  = 0;
-	private int MotionState  = 0;
+
 	boolean Registered = true;					
 	MessageWindow mw = null;					// This is the message window
 	Indicator wi;								// Window break indicator
@@ -60,6 +60,7 @@ class SecurityMonitor extends Thread
 
 	} // Constructor
 
+	@Override
 	public void run()
 	{
 		Message Msg = null;				// Message object
@@ -221,13 +222,13 @@ class SecurityMonitor extends Thread
 
 				if (CurrentWindowAlarm  == 0) // window break is disarm
 				{
-					wi.SetLampColorAndMessage("window break is arm", 24);
+					wi.SetLampColorAndMessage("window break is arm", 1);
 					ArmWindowBreak(ON);
 
 				} else {
 					
-					wi.SetLampColorAndMessage("window break is disarm", 24);
-					DisarmWindowBreak(ON);
+					wi.SetLampColorAndMessage("window break is disarm", 3);
+					ArmWindowBreak(OFF);
 
 					
 				} // if
@@ -235,25 +236,25 @@ class SecurityMonitor extends Thread
 				
 				if (CurrentDoorAlarm == 0)
 				{
-					di.SetLampColorAndMessage("door break is arm", 24); // door break is disarm
+					di.SetLampColorAndMessage("door break is arm", 1); // door break is disarm
 					ArmDoorBreak(ON);
 
 				} else {
 
-					di.SetLampColorAndMessage("door break is disarm", 24);
-					DisarmDoorBreak(ON);
+					di.SetLampColorAndMessage("door break is disarm", 3);
+					ArmDoorBreak(OFF);
 					
 				} // if
 
 				if (CurrentMotionAlarm == 0)
 				{
-					mi.SetLampColorAndMessage("motion detection is on", 24); // motion detection is off
+					mi.SetLampColorAndMessage("motion detection is on", 1); // motion detection is off
 					ArmMotionDetection(ON);
 
 				} else {
 
-					mi.SetLampColorAndMessage("motion detection is off", 24);
-					DisarmMotionDetection(ON);
+					mi.SetLampColorAndMessage("motion detection is off", 3);
+					ArmMotionDetection(OFF);
 
 				} // if
 
@@ -321,7 +322,7 @@ class SecurityMonitor extends Thread
 
 		Message msg;
 
-		msg = new Message( (int) 99, "XXX" );
+		msg = new Message( 99, "XXX" );
 
 		// Here we send the message to the message manager.
 
@@ -339,20 +340,51 @@ class SecurityMonitor extends Thread
 
 	} // Halt
 
-	// raise window, door, motion alarm
+	
 
-	public void SetWindowBroken(int status )
+	public void ArmWindowBreak(boolean status )
 	{
 
-		Message msg;
+		Message msg = null;
 
-		if ( status == 1 )
+		if ( status )
 		{
-			msg = new Message( (int) 35, "wba1" );
+			msg = new Message( 25, "wba1" );
 
 		} else {
 
-			msg = new Message( (int) 35, "wba0" );
+			msg = new Message( 25, "wba0" );
+
+		} // if
+
+		// Here we send the message to the message manager.
+
+		try
+		{
+			em.SendMessage( msg );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println("Error sending control message:: " + e);
+
+		} // catch
+
+	}
+	
+	public void ArmDoorBreak(boolean status )
+	{
+
+		Message msg = null;
+
+		if ( status)
+		{
+			msg = new Message( 26, "dba1" );
+
+		} else{
+
+			msg = new Message( 26, "dba0" );
 
 		} // if
 
@@ -372,141 +404,18 @@ class SecurityMonitor extends Thread
 
 	}
 
-	public void StopWindowAlarm(int status )
+	public void ArmMotionDetection(boolean status )
 	{
 
-		Message msg;
+		Message msg = null;
 
-		if ( status == 1 )
+		if ( status )
 		{
-			msg = new Message( (int) 35, "wba0" );
+			msg = new Message( 27, "ma1" );
 
 		} else {
 
-			msg = new Message( (int) 35, "wba1" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-	public void SetDoorBroken(int status )
-	{
-
-		Message msg;
-
-		if ( status == 1 )
-		{
-			msg = new Message( (int) 36, "dba1" );
-
-		} else {
-
-			msg = new Message( (int) 36, "dba0" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
-	public void StopDoorAlarm(int status )
-	{
-
-		Message msg;
-
-		if ( status == 1 )
-		{
-			msg = new Message( (int) 36, "dba0" );
-
-		} else {
-
-			msg = new Message( (int) 36, "dba1" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
-	public void SetMotionDetection(int status )
-	{
-
-		Message msg;
-
-		if ( status == 1 )
-		{
-			msg = new Message( (int) 37, "ma1" );
-
-		} else {
-
-			msg = new Message( (int) 37, "ma0" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
-	public void StopMotionAlarm(int status )
-	{
-
-		Message msg;
-
-		if ( status == 1 )
-		{
-			msg = new Message( (int) 37, "ma0" );
-
-		} else {
-
-			msg = new Message( (int) 37, "ma1" );
+			msg = new Message( 27, "ma0" );
 
 		} // if
 
@@ -527,23 +436,23 @@ class SecurityMonitor extends Thread
 	}
 
 	/**********
-	Window break alarm
+	Alarms
 	***********/
 
-
-	public void ArmWindowBreak( boolean ON )
+	
+	public void SetWindowBrokenAlarm( int status )
 	{
 		// Here we create the message.
 
-		Message msg;
+		Message msg = null;
 
-		if ( ON )
+		if ( status==1 )
 		{
-			msg = new Message( (int) 25, "wb1" );
+			msg = new Message( 25, "wb2" );
 
-		} else {
+		} else if(status==0){
 
-			msg = new Message( (int) 25, "wb0" );
+			msg = new Message( 25, "wb3" );
 
 		} // if
 
@@ -562,53 +471,20 @@ class SecurityMonitor extends Thread
 		} // catch
 
 	} 
-
-    public void DisarmWindowBreak( boolean ON )
+	
+	public void SetDoorBrokenAlarm( int status )
 	{
 		// Here we create the message.
 
-		Message msg;
+		Message msg = null;
 
-		if ( ON )
+		if ( status ==1 )
 		{
-			msg = new Message( (int) 25, "wb0" );
+			msg = new Message( 26, "db2" );
 
-		} else {
+		} else if(status ==0) {
 
-			msg = new Message( (int) 25, "wb1" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
-
-	public void ArmDoorBreak( boolean ON )
-	{
-		// Here we create the message.
-
-		Message msg;
-
-		if ( ON )
-		{
-			msg = new Message( (int) 26, "db1" );
-
-		} else {
-
-			msg = new Message( (int) 26, "db0" );
+			msg = new Message( 26, "db3" );
 
 		} // if
 
@@ -627,53 +503,19 @@ class SecurityMonitor extends Thread
 		} // catch
 
 	} 
-
-	public void DisarmDoorBreak( boolean ON )
+	
+	public void SetMotionDetectionAlarm ( int status)
 	{
 		// Here we create the message.
 
-		Message msg;
-
-		if ( ON )
+		Message msg = null;
+		if(status==1)
 		{
-			msg = new Message( (int) 26, "db0" );
+			msg = new Message( 27, "m2" );
 
-		} else {
+		} else if(status==0) {
 
-			msg = new Message( (int) 26, "db1" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	} 
-
-
-	public void ArmMotionDetection( boolean ON )
-	{
-		// Here we create the message.
-
-		Message msg;
-
-		if ( ON )
-		{
-			msg = new Message( (int) 27, "m1" );
-
-		} else {
-
-			msg = new Message( (int) 27, "m0" );
+			msg = new Message( 27, "m3" );
 
 		} // if
 
@@ -693,37 +535,6 @@ class SecurityMonitor extends Thread
 
 	} 
 
-	public void DisarmMotionDetection( boolean ON )
-	{
-		// Here we create the message.
-
-		Message msg;
-
-		if ( ON )
-		{
-			msg = new Message( (int) 27, "m0" );
-
-		} else {
-
-			msg = new Message( (int) 27, "m1" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message::  " + e);
-
-		} // catch
-
-	} 
 
 
 } 

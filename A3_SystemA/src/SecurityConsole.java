@@ -94,7 +94,7 @@ public class SecurityConsole {
 									// Call a method in the security monitor
 									// that will allow me to disarm window alarm
 									// Monitor.
-									Monitor.DisarmWindowBreak(true);
+									Monitor.ArmWindowBreak(false);
 									innerError = false;
 									break;
 								case "3":
@@ -142,7 +142,7 @@ public class SecurityConsole {
 									// Call a method in the security monitor
 									// that will allow me to disarm door alarm
 									// Monitor.
-									Monitor.DisarmDoorBreak(true);
+									Monitor.ArmDoorBreak(false);
 									innerError = false;
 									break;
 								case "3":
@@ -187,7 +187,7 @@ public class SecurityConsole {
 									// that will allow me to disarm motion
 									// sensor alarm
 									// Monitor.
-									Monitor.DisarmMotionDetection(true);
+									Monitor.ArmMotionDetection(false);
 									innerError = false;
 									break;
 								case "3":
