@@ -78,7 +78,7 @@ class SecurityMonitor extends Thread
 		boolean ON = true;				
 		boolean OFF = false;			
 
-		{
+
 
          if (em != null)
 		 {
