@@ -7,20 +7,15 @@ class SecurityMonitor extends Thread
 {
 	private MessageManagerInterface em = null;	
 	private String MsgMgrIP = null;				
-	// private int WindowArm = 1;			
-	// private int WindowDisarm = 0;				
-	// private int DoorArm = 1;			
-	// private int DoorDisarm = 0;	
-	// private int MotionArm = 1;			
-	// private int MotionDisarm = 0;			
+	private int Window = 0;
+	private int Door = 0;
+	private int Motion = 0;
 	boolean Registered = true;					
 	MessageWindow mw = null;					// This is the message window
 	Indicator wi;								// Window break indicator
 	Indicator di;								// Door break indicator
 	Indicator mi;								// Motion Detection indicator
-	// Indicator won;								// Window break indicator
-	// Indicator don;								// Door break indicator
-	// Indicator mon;
+
 
 	public SecurityMonitor()
 	{
@@ -217,9 +212,6 @@ class SecurityMonitor extends Thread
 						wi.dispose();
 						di.dispose();
 						mi.dispose();
-						// won.dispose();
-						// don.dispose();
-						// mon.dispose();
 
 					} // if
 
@@ -248,7 +240,6 @@ class SecurityMonitor extends Thread
 					di.SetLampColorAndMessage("door break is arm", 24); // door break is disarm
 					ArmDoorBreak(ON);
 
-
 				} else {
 
 					di.SetLampColorAndMessage("door break is disarm", 24);
@@ -261,13 +252,11 @@ class SecurityMonitor extends Thread
 					mi.SetLampColorAndMessage("motion detection is on", 24); // motion detection is off
 					ArmMotionDetection(ON);
 
-
 				} else {
 
 					mi.SetLampColorAndMessage("motion detection is off", 24);
 					DisarmMotionDetection(ON);
 
-					
 				} // if
 
 				// This delay slows down the sample rate to Delay milliseconds
@@ -352,8 +341,35 @@ class SecurityMonitor extends Thread
 
 	} // Halt
 
+
+	// set window, door, motion status
+
+	public void SetWindowBroken(int status )
+	{
+		Window = status;
+
+		mw.WriteMessage( "***Window is broken***" );
+
+	}
+
+	public void SetDoorBroken(int status )
+	{
+		Door = status;
+
+		mw.WriteMessage( "***Door is broken***" );
+
+	}
+
+	public void SetMotionDetection(int status )
+	{
+		Motion = status;
+
+		mw.WriteMessage( "***Motion is detected***" );
+
+	}
+
 	/**********
-	Window break
+	Window break alarm
 	***********/
 
 
@@ -365,11 +381,11 @@ class SecurityMonitor extends Thread
 
 		if ( ON )
 		{
-			msg = new Message( (int) 25, "ARM1" );
+			msg = new Message( (int) 25, "wb1" );
 
 		} else {
 
-			msg = new Message( (int) 25, "ARM0" );
+			msg = new Message( (int) 25, "wb0" );
 
 		} // if
 
@@ -397,11 +413,11 @@ class SecurityMonitor extends Thread
 
 		if ( ON )
 		{
-			msg = new Message( (int) 25, "DISARM1" );
+			msg = new Message( (int) 25, "wb0" );
 
 		} else {
 
-			msg = new Message( (int) 25, "DISARM0" );
+			msg = new Message( (int) 25, "wb1" );
 
 		} // if
 
@@ -430,11 +446,11 @@ class SecurityMonitor extends Thread
 
 		if ( ON )
 		{
-			msg = new Message( (int) 26, "ARM1" );
+			msg = new Message( (int) 26, "db1" );
 
 		} else {
 
-			msg = new Message( (int) 26, "ARM0" );
+			msg = new Message( (int) 26, "db0" );
 
 		} // if
 
@@ -462,11 +478,11 @@ class SecurityMonitor extends Thread
 
 		if ( ON )
 		{
-			msg = new Message( (int) 26, "DISARM1" );
+			msg = new Message( (int) 26, "db0" );
 
 		} else {
 
-			msg = new Message( (int) 26, "DISARM0" );
+			msg = new Message( (int) 26, "db1" );
 
 		} // if
 
@@ -495,11 +511,11 @@ class SecurityMonitor extends Thread
 
 		if ( ON )
 		{
-			msg = new Message( (int) 27, "ARM1" );
+			msg = new Message( (int) 27, "m1" );
 
 		} else {
 
-			msg = new Message( (int) 27, "ARM0" );
+			msg = new Message( (int) 27, "m0" );
 
 		} // if
 
@@ -527,11 +543,11 @@ class SecurityMonitor extends Thread
 
 		if ( ON )
 		{
-			msg = new Message( (int) 27, "DISARM1" );
+			msg = new Message( (int) 27, "m0" );
 
 		} else {
 
-			msg = new Message( (int) 27, "DISARM0" );
+			msg = new Message( (int) 27, "m1" );
 
 		} // if
 
