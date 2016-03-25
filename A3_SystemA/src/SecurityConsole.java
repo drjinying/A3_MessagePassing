@@ -86,14 +86,15 @@ public class SecurityConsole {
 								case "1":
 									// Call a method in the security monitor
 									// that will allow me to arm window alarm
-									
 									// Monitor.
+									Monitor.ArmWindowBreak(true);
 									innerError = false;
 									break;
 								case "2":
 									// Call a method in the security monitor
 									// that will allow me to disarm window alarm
 									// Monitor.
+									Monitor.DisarmWindowBreak(true);
 									innerError = false;
 									break;
 								case "3":
@@ -134,12 +135,14 @@ public class SecurityConsole {
 									// Call a method in the security monitor
 									// that will allow me to arm door alarm
 									// Monitor.
+									Monitor.ArmDoorBreak(true);
 									innerError = false;
 									break;
 								case "2":
 									// Call a method in the security monitor
 									// that will allow me to disarm door alarm
 									// Monitor.
+									Monitor.DisarmDoorBreak(true);
 									innerError = false;
 									break;
 								case "3":
@@ -176,6 +179,7 @@ public class SecurityConsole {
 									// that will allow me to arm motion sensor
 									// alarm
 									// Monitor.
+									Monitor.ArmMotionDetection(true);
 									innerError = false;
 									break;
 								case "2":
@@ -183,6 +187,7 @@ public class SecurityConsole {
 									// that will allow me to disarm motion
 									// sensor alarm
 									// Monitor.
+									Monitor.DisarmMotionDetection(true);
 									innerError = false;
 									break;
 								case "3":

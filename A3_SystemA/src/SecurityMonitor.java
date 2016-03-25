@@ -339,30 +339,190 @@ class SecurityMonitor extends Thread
 
 	} // Halt
 
-
-	// set window, door, motion status
+	// raise window, door, motion alarm
 
 	public void SetWindowBroken(int status )
 	{
-		WindowState = status;
 
-		mw.WriteMessage( "***Window is broken***" );
+		Message msg;
+
+		if ( status == 1 )
+		{
+			msg = new Message( (int) 35, "wba1" );
+
+		} else {
+
+			msg = new Message( (int) 35, "wba0" );
+
+		} // if
+
+		// Here we send the message to the message manager.
+
+		try
+		{
+			em.SendMessage( msg );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println("Error sending control message:: " + e);
+
+		} // catch
 
 	}
 
+	public void StopWindowAlarm(int status )
+	{
+
+		Message msg;
+
+		if ( status == 1 )
+		{
+			msg = new Message( (int) 35, "wba0" );
+
+		} else {
+
+			msg = new Message( (int) 35, "wba1" );
+
+		} // if
+
+		// Here we send the message to the message manager.
+
+		try
+		{
+			em.SendMessage( msg );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println("Error sending control message:: " + e);
+
+		} // catch
+
+	}
 	public void SetDoorBroken(int status )
 	{
-		DoorState = status;
 
-		mw.WriteMessage( "***Door is broken***" );
+		Message msg;
+
+		if ( status == 1 )
+		{
+			msg = new Message( (int) 36, "dba1" );
+
+		} else {
+
+			msg = new Message( (int) 36, "dba0" );
+
+		} // if
+
+		// Here we send the message to the message manager.
+
+		try
+		{
+			em.SendMessage( msg );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println("Error sending control message:: " + e);
+
+		} // catch
+
+	}
+
+	public void StopDoorAlarm(int status )
+	{
+
+		Message msg;
+
+		if ( status == 1 )
+		{
+			msg = new Message( (int) 36, "dba0" );
+
+		} else {
+
+			msg = new Message( (int) 36, "dba1" );
+
+		} // if
+
+		// Here we send the message to the message manager.
+
+		try
+		{
+			em.SendMessage( msg );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println("Error sending control message:: " + e);
+
+		} // catch
 
 	}
 
 	public void SetMotionDetection(int status )
 	{
-		MotionState = status;
 
-		mw.WriteMessage( "***Motion is detected***" );
+		Message msg;
+
+		if ( status == 1 )
+		{
+			msg = new Message( (int) 37, "ma1" );
+
+		} else {
+
+			msg = new Message( (int) 37, "ma0" );
+
+		} // if
+
+		// Here we send the message to the message manager.
+
+		try
+		{
+			em.SendMessage( msg );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println("Error sending control message:: " + e);
+
+		} // catch
+
+	}
+
+	public void StopMotionAlarm(int status )
+	{
+
+		Message msg;
+
+		if ( status == 1 )
+		{
+			msg = new Message( (int) 37, "ma0" );
+
+		} else {
+
+			msg = new Message( (int) 37, "ma1" );
+
+		} // if
+
+		// Here we send the message to the message manager.
+
+		try
+		{
+			em.SendMessage( msg );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println("Error sending control message:: " + e);
+
+		} // catch
 
 	}
 
@@ -371,7 +531,7 @@ class SecurityMonitor extends Thread
 	***********/
 
 
-	private void ArmWindowBreak( boolean ON )
+	public void ArmWindowBreak( boolean ON )
 	{
 		// Here we create the message.
 
@@ -403,7 +563,7 @@ class SecurityMonitor extends Thread
 
 	} 
 
-    private void DisarmWindowBreak( boolean ON )
+    public void DisarmWindowBreak( boolean ON )
 	{
 		// Here we create the message.
 
@@ -436,7 +596,7 @@ class SecurityMonitor extends Thread
 	}
 
 
-	private void ArmDoorBreak( boolean ON )
+	public void ArmDoorBreak( boolean ON )
 	{
 		// Here we create the message.
 
@@ -468,7 +628,7 @@ class SecurityMonitor extends Thread
 
 	} 
 
-	private void DisarmDoorBreak( boolean ON )
+	public void DisarmDoorBreak( boolean ON )
 	{
 		// Here we create the message.
 
@@ -501,7 +661,7 @@ class SecurityMonitor extends Thread
 	} 
 
 
-	private void ArmMotionDetection( boolean ON )
+	public void ArmMotionDetection( boolean ON )
 	{
 		// Here we create the message.
 
@@ -533,7 +693,7 @@ class SecurityMonitor extends Thread
 
 	} 
 
-	private void DisarmMotionDetection( boolean ON )
+	public void DisarmMotionDetection( boolean ON )
 	{
 		// Here we create the message.
 
