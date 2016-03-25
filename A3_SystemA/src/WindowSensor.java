@@ -8,7 +8,7 @@
 *
 * Description:
 *
-* This class simulates a temperature sensor. It polls the message manager for messages corresponding to changes in state
+* This class simulates a window sensor. It polls the message manager for messages corresponding to changes in state
 * of the heater or chiller and reacts to them by trending the ambient temperature up or down. The current ambient
 * room temperature is posted to the message manager.
 *
@@ -16,14 +16,11 @@
 * on the local machine.
 *
 * Internal Methods:
-*	float GetRandomNumber()
-*	boolean CoinToss()
-*   void PostTemperature(MessageManagerInterface ei, float temperature )
+*   PostWindowState(MessageManagerInterface ei, boolean State)
 *
 ******************************************************************************************************************/
 import InstrumentationPackage.*;
 import MessagePackage.*;
-import java.util.*;
 
 class WindowSensor
 {
@@ -32,7 +29,6 @@ class WindowSensor
 		String MsgMgrIP;				// Message Manager IP address
 		Message Msg = null;				// Message object
 		MessageQueue eq = null;			// Message Queue
-		int MsgId = 0;					// User specified message ID
 		MessageManagerInterface em = null;// Interface object to the message manager
 		boolean WindowState = false;	// Window state: false == safe, true == broken
 		boolean SensorState = true;     // Window state: true == armed, false == disarmed
@@ -271,15 +267,21 @@ class WindowSensor
 	static private void PostWindowState(MessageManagerInterface ei, boolean State)
 	{
 		// Here we create the message.
-
-		Message msg = new Message( (int) 1, String.valueOf(State) );
-
+		Message msg = null;
+		if (State)
+		{
+			msg = new Message( (int) 1, "W1" );
+		}
+		if (!State)
+		{
+			msg = new Message( (int) 1, "W0" );
+		}
 		// Here we send the message to the message manager.
 
 		try
 		{
 			ei.SendMessage( msg );
-			//System.out.println( "Sent Temp Message" );
+			//System.out.println( "Sent Window Message" );
 
 		} // try
 
