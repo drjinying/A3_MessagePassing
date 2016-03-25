@@ -7,9 +7,9 @@ class SecurityMonitor extends Thread
 {
 	private MessageManagerInterface em = null;	
 	private String MsgMgrIP = null;				
-	private int Window = 0;
-	private int Door = 0;
-	private int Motion = 0;
+	private int WindowState = 0;
+	private int DoorState  = 0;
+	private int MotionState  = 0;
 	boolean Registered = true;					
 	MessageWindow mw = null;					// This is the message window
 	Indicator wi;								// Window break indicator
@@ -65,9 +65,9 @@ class SecurityMonitor extends Thread
 		Message Msg = null;				// Message object
 		MessageQueue eq = null;			// Message Queue
 		int MsgId = 0;					// User specified message ID
-		int CurrentWindow = 0;	
-		int CurrentDoor= 0;		
-		int CurrentMotion = 0;	
+		int CurrentWindowAlarm = 0;
+		int CurrentDoorAlarm= 0;
+		int CurrentMotionAlarm = 0;
 		int	Delay = 1000;				// The loop delay (1 second)
 		boolean Done = false;			// Loop termination flag
 		boolean ON = true;				
@@ -82,9 +82,7 @@ class SecurityMonitor extends Thread
 			wi = new Indicator ("Window break UNK", mw.GetX()+ mw.Width(), 0);
 			di = new Indicator ("Door break UNK", mw.GetX()+ mw.Width(), 0 );
 			mi = new Indicator ("Motion detection UNK", mw.GetX()+ mw.Width(), 0);
-			// won = new Indicator ("Window Alarm", mw.GetX()+ mw.Width(), 0);
-			// don = new Indicator ("Door Alarm", mw.GetX()+ mw.Width(), 0 );
-			// mon = new Indicator ("Motion Alarm", mw.GetX()+ mw.Width(), 0);
+
 
 			mw.WriteMessage( "Registered with the message manager." );
 
@@ -138,7 +136,7 @@ class SecurityMonitor extends Thread
 					{
 						try
 						{
-							CurrentWindow = Integer.valueOf(Msg.GetMessage()).intValue();
+							CurrentWindowAlarm = Integer.valueOf(Msg.GetMessage()).intValue();
 
 						} // try
 
@@ -155,7 +153,7 @@ class SecurityMonitor extends Thread
 						try
 						{
 
-							CurrentDoor = Integer.valueOf(Msg.GetMessage()).intValue();
+							CurrentDoorAlarm = Integer.valueOf(Msg.GetMessage()).intValue();
 
 						} // try
 
@@ -172,7 +170,7 @@ class SecurityMonitor extends Thread
 						try
 						{
 
-							CurrentMotion = Integer.valueOf(Msg.GetMessage()).intValue();
+							CurrentMotionAlarm = Integer.valueOf(Msg.GetMessage()).intValue();
 
 						} // try
 
@@ -217,11 +215,11 @@ class SecurityMonitor extends Thread
 
 				} // for
 
-				mw.WriteMessage("Window:: " + CurrentWindow + "Door:: " + CurrentDoor + "Motion:: " + CurrentMotion );
+				mw.WriteMessage("Window Alarm:: " + CurrentWindowAlarm + "Door Alarm:: " + CurrentDoorAlarm + "Motion Alarm:: " + CurrentMotionAlarm );
 
 				// Check temperature and effect control as necessary
 
-				if (CurrentWindow  == 0) // window break is disarm
+				if (CurrentWindowAlarm  == 0) // window break is disarm
 				{
 					wi.SetLampColorAndMessage("window break is arm", 24);
 					ArmWindowBreak(ON);
@@ -235,7 +233,7 @@ class SecurityMonitor extends Thread
 				} // if
 
 				
-				if (CurrentDoor == 0)
+				if (CurrentDoorAlarm == 0)
 				{
 					di.SetLampColorAndMessage("door break is arm", 24); // door break is disarm
 					ArmDoorBreak(ON);
@@ -247,7 +245,7 @@ class SecurityMonitor extends Thread
 					
 				} // if
 
-				if (CurrentMotion == 0)
+				if (CurrentMotionAlarm == 0)
 				{
 					mi.SetLampColorAndMessage("motion detection is on", 24); // motion detection is off
 					ArmMotionDetection(ON);
@@ -346,7 +344,7 @@ class SecurityMonitor extends Thread
 
 	public void SetWindowBroken(int status )
 	{
-		Window = status;
+		WindowState = status;
 
 		mw.WriteMessage( "***Window is broken***" );
 
@@ -354,7 +352,7 @@ class SecurityMonitor extends Thread
 
 	public void SetDoorBroken(int status )
 	{
-		Door = status;
+		DoorState = status;
 
 		mw.WriteMessage( "***Door is broken***" );
 
@@ -362,7 +360,7 @@ class SecurityMonitor extends Thread
 
 	public void SetMotionDetection(int status )
 	{
-		Motion = status;
+		MotionState = status;
 
 		mw.WriteMessage( "***Motion is detected***" );
 

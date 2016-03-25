@@ -26,8 +26,8 @@
       <file leaf-file-name="SecurityMonitor.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/SecurityMonitor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.555555">
-              <caret line="385" column="16" selection-start-line="385" selection-start-column="16" selection-end-line="385" selection-end-column="16" />
+            <state vertical-scroll-proportion="-1.2592592">
+              <caret line="342" column="38" selection-start-line="342" selection-start-column="38" selection-end-line="342" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -45,11 +45,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SecurityController.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SecurityController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/SecurityController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.07835821">
-              <caret line="232" column="0" selection-start-line="232" selection-start-column="0" selection-end-line="232" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="121" column="12" selection-start-line="121" selection-start-column="12" selection-end-line="121" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -75,11 +75,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ECSMonitor.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ECSMonitor.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/ECSMonitor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.592592">
-              <caret line="318" column="28" selection-start-line="318" selection-start-column="28" selection-end-line="318" selection-end-column="28" />
+            <state vertical-scroll-proportion="0.73745173">
+              <caret line="380" column="0" selection-start-line="380" selection-start-column="0" selection-end-line="380" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -88,8 +88,8 @@
       <file leaf-file-name="ECSConsole.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ECSConsole.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.37037">
-              <caret line="147" column="22" selection-start-line="147" selection-start-column="22" selection-end-line="147" selection-end-column="22" />
+            <state vertical-scroll-proportion="-9.259259">
+              <caret line="184" column="24" selection-start-line="184" selection-start-column="24" selection-end-line="184" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -513,12 +513,12 @@
       <option name="number" value="Default" />
       <updated>1458873156192</updated>
       <workItem from="1458873159562" duration="1397000" />
-      <workItem from="1458918645035" duration="1270000" />
+      <workItem from="1458918645035" duration="2310000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2667000" />
+    <option name="totallyTimeSpent" value="3707000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -620,22 +620,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ECSMonitor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.592592">
-          <caret line="318" column="28" selection-start-line="318" selection-start-column="28" selection-end-line="318" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ECSConsole.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.37037">
-          <caret line="147" column="22" selection-start-line="147" selection-start-column="22" selection-end-line="147" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/MessageManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -652,20 +636,36 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/SecurityController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="121" column="12" selection-start-line="121" selection-start-column="12" selection-end-line="121" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ECSConsole.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.259259">
+          <caret line="184" column="24" selection-start-line="184" selection-start-column="24" selection-end-line="184" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/SecurityMonitor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.555555">
-          <caret line="385" column="16" selection-start-line="385" selection-start-column="16" selection-end-line="385" selection-end-column="16" />
+        <state vertical-scroll-proportion="-1.2592592">
+          <caret line="342" column="38" selection-start-line="342" selection-start-column="38" selection-end-line="342" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/SecurityController.java">
+    <entry file="file://$PROJECT_DIR$/src/ECSMonitor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.07835821">
-          <caret line="232" column="0" selection-start-line="232" selection-start-column="0" selection-end-line="232" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.73745173">
+          <caret line="380" column="0" selection-start-line="380" selection-start-column="0" selection-end-line="380" selection-end-column="0" />
           <folding />
         </state>
       </provider>
