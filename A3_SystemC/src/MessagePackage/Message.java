@@ -30,92 +30,99 @@ package MessagePackage;
 
 import java.io.Serializable;
 
-public class Message implements Serializable {
+public class Message implements Serializable
+{
 
-	private String MessageText; // Any string message.
-	private int MessageId; // Message Id is defined by the participant.
-	private long SenderId; // Id assigned at registration time by the message
-							// manager. The ID for every message is
-							// set by the MessageManagerInterface before the
-							// message is sent to the message manager.
+	private String MessageText;	// Any string message.
+	private int MessageId;		// Message Id is defined by the participant.
+	private long SenderId;		// Id assigned at registration time by the message manager. The ID for every message is
+								// set by the MessageManagerInterface before the message is sent to the message manager.
 
-	public Message(int MsgId, String Text) {
+	public Message(int MsgId, String Text )
+	{
 		MessageText = Text;
 		MessageId = MsgId;
 
 	} // constructor
 
-	public Message(int MsgId) {
+	public Message(int MsgId )
+	{
 		MessageText = null;
 		MessageId = MsgId;
 
 	} // constructor
 
 	/***************************************************************************
-	 * CONCRETE METHOD:: GetSenderID Purpose: This method returns the ID of the
-	 * participant that posted this Message.
-	 *
-	 * Arguments: None
-	 *
-	 * Returns: long integer
-	 *
-	 * Exceptions: None
-	 *
-	 ****************************************************************************/
+	* CONCRETE METHOD:: GetSenderID
+	* Purpose: This method returns the ID of the participant that posted this
+	*		   Message.
+	*
+	* Arguments: None
+	*
+	* Returns: long integer
+	*
+	* Exceptions: None
+	*
+	****************************************************************************/
 
-	public long GetSenderId() {
+	public long GetSenderId()
+	{
 		return SenderId;
 
 	} // GetSenderId
 
 	/***************************************************************************
-	 * CONCRETE METHOD:: SetSenderID Purpose: This method sets the ID of message
-	 * to the long value.
-	 *
-	 * Arguments: long integer
-	 *
-	 * Returns: None
-	 *
-	 * Exceptions: None
-	 *
-	 ****************************************************************************/
+	* CONCRETE METHOD:: SetSenderID
+	* Purpose: This method sets the ID of message to the long value.
+	*
+	* Arguments: long integer
+	*
+	* Returns: None
+	*
+	* Exceptions: None
+	*
+	****************************************************************************/
 
-	public void SetSenderId(long id) {
+	public void SetSenderId( long id )
+	{
 		SenderId = id;
 
 	} // GetSenderId
 
 	/***************************************************************************
-	 * CONCRETE METHOD:: SetMessageID Purpose: This method returns the message
-	 * ID of the posted message. There is not semantic imposed on IDs.
-	 *
-	 * Arguments: None
-	 *
-	 * Returns: int
-	 *
-	 * Exceptions: None
-	 *
-	 ****************************************************************************/
+	* CONCRETE METHOD:: SetMessageID
+	* Purpose: This method returns the message ID of the posted message. There is not
+	*		   semantic imposed on IDs.
+	*
+	* Arguments: None
+	*
+	* Returns: int
+	*
+	* Exceptions: None
+	*
+	****************************************************************************/
 
-	public int GetMessageId() {
+	public int GetMessageId()
+	{
 		return MessageId;
 
 	} // GetMessageId
 
 	/***************************************************************************
-	 * CONCRETE METHOD:: GetMessage Purpose: This method returns the message (if
-	 * there is one) of the posted message. There is not semantic imposed on
-	 * IDs.
-	 *
-	 * Arguments: None
-	 *
-	 * Returns: int
-	 *
-	 * Exceptions: None
-	 *
-	 ****************************************************************************/
+	* CONCRETE METHOD:: GetMessage
+	* Purpose: This method returns the message (if there is one) of the posted message. There is not
+	*		   semantic imposed on IDs.
+	*
+	* Arguments: None
+	*
+	* Returns: int
+	*
+	* Exceptions: None
+	*
+	****************************************************************************/
 
-	public String GetMessage() {
+	public String GetMessage()
+	{
 		return MessageText;
 
 	} // GetMessage
