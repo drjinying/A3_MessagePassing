@@ -80,7 +80,9 @@ class SecurityMonitor extends Thread
 
 		{
 
-
+         if (em != null)
+		 {
+			
 			mw = new MessageWindow("Security Monitoring Console", 0, 0);
 			wi = new Indicator ("Window break UNK", mw.GetX()+ mw.Width(), 0);
 			di = new Indicator ("Door break UNK", mw.GetX()+ mw.Width(), 0 );
