@@ -44,7 +44,7 @@ public class MessageQueue implements Serializable
 	*
 	* Arguments: None
 	*
-	* Returns: long integet
+	* Returns: long integer
 	*
 	* Exceptions: None
 	*

@@ -8,7 +8,7 @@
 *
 * Description:	This class defines messages. Messages include the sender's ID, the message ID, and
 *				a message field for sending small messages between entities participating in
-*				the mesage system.
+*				the message system.
 *
 * Parameters:
 *				MessageId - Integer that indicates an id correlating to an message type. The message framework does not
