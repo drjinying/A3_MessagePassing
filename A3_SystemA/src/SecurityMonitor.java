@@ -231,14 +231,12 @@ class SecurityMonitor extends Thread
 
 				if (CurrentWindow  == 0) // window break is disarm
 				{
-					wi.SetLampColorAndMessage("window break is disarm", 24);
+					wi.SetLampColorAndMessage("window break is arm", 24);
 					ArmWindowBreak(ON);
-					DisarmWindowBreak(OFF);
 
 				} else {
 					
-					wi.SetLampColorAndMessage("window break is arm", 24);
-					ArmWindowBreak(OFF);
+					wi.SetLampColorAndMessage("window break is disarm", 24);
 					DisarmWindowBreak(ON);
 
 					
@@ -247,29 +245,26 @@ class SecurityMonitor extends Thread
 				
 				if (CurrentDoor == 0)
 				{
-					di.SetLampColorAndMessage("door break is disarm", 24); // door break is disarm
+					di.SetLampColorAndMessage("door break is arm", 24); // door break is disarm
 					ArmDoorBreak(ON);
-					DisarmDoorBreak(OFF);
+
 
 				} else {
 
-					di.SetLampColorAndMessage("door break is arm", 24);
-					ArmDoorBreak(OFF);
+					di.SetLampColorAndMessage("door break is disarm", 24);
 					DisarmDoorBreak(ON);
-
 					
 				} // if
 
 				if (CurrentMotion == 0)
 				{
-					mi.SetLampColorAndMessage("motion detection is off", 24); // motion detection is off
+					mi.SetLampColorAndMessage("motion detection is on", 24); // motion detection is off
 					ArmMotionDetection(ON);
-					DisarmMotionDetection(OFF);
+
 
 				} else {
 
-					mi.SetLampColorAndMessage("motion detection is on", 24);
-					ArmMotionDetection(OFF);
+					mi.SetLampColorAndMessage("motion detection is off", 24);
 					DisarmMotionDetection(ON);
 
 					
