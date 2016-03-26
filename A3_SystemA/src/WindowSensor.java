@@ -167,7 +167,7 @@ class WindowSensor
 				{
 					Msg = eq.GetMessage();
 
-					if ( Msg.GetMessageId() == -25 )
+					if ( Msg.GetMessageId() == 25 )
 					{
 						if (Msg.GetMessage().equalsIgnoreCase("wb1")) // Sensor is armed
 						{
@@ -271,11 +271,11 @@ class WindowSensor
 		Message msg = null;
 		if (State)
 		{
-			msg = new Message( (int) 1, "W1" );
+			msg = new Message( (int) 30, "W1" );
 		}
 		if (!State)
 		{
-			msg = new Message( (int) 1, "W0" );
+			msg = new Message( (int) 30, "W0" );
 		}
 		// Here we send the message to the message manager.
 
