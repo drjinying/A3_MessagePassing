@@ -34,21 +34,27 @@ public class Message implements Serializable
 {
 
 	private String MessageText;	// Any string message.
-	private int MessageId;		// Message Id is defined by the participant.
+	private int _MessageId;		// Message Id is defined by the participant.
+	private MessageConstants messageId;		// Message Id is defined by the participant.
 	private long SenderId;		// Id assigned at registration time by the message manager. The ID for every message is
 								// set by the MessageManagerInterface before the message is sent to the message manager.
 
-	public Message(int MsgId, String Text )
+	public Message(MessageConstants MsgId, String Text )
 	{
 		MessageText = Text;
-		MessageId = MsgId;
+		messageId = MsgId;
 
 	} // constructor
+	public Message(MessageConstants MsgId, MessageConstants Text )
+	{
+		MessageText = Text.toString();
+		messageId = MsgId;
 
-	public Message(int MsgId )
+	} // constructor
+	public Message(MessageConstants MsgId )
 	{
 		MessageText = null;
-		MessageId = MsgId;
+		messageId = MsgId;
 
 	} // constructor
 
@@ -102,9 +108,9 @@ public class Message implements Serializable
 	*
 	****************************************************************************/
 
-	public int GetMessageId()
+	public MessageConstants GetMessageId()
 	{
-		return MessageId;
+		return messageId;
 
 	} // GetMessageId
 

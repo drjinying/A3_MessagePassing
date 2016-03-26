@@ -158,7 +158,7 @@ class ECSMonitor extends Thread
 				{
 					Msg = eq.GetMessage();
 
-					if ( Msg.GetMessageId() == 1 ) // Temperature reading
+					if ( Msg.GetMessageId() == MessageConstants.CSL_TEMP) // Temperature reading
 					{
 						try
 						{
@@ -174,7 +174,7 @@ class ECSMonitor extends Thread
 
 					} // if
 
-					if ( Msg.GetMessageId() == 2 ) // Humidity reading
+					if ( Msg.GetMessageId() == MessageConstants.CSL_HUMI) // Humidity reading
 					{
 						try
 						{
@@ -195,7 +195,7 @@ class ECSMonitor extends Thread
 					// is to end. At this point, the loop termination flag is set to
 					// true and this process unregisters from the message manager.
 
-					if ( Msg.GetMessageId() == 99 )
+					if ( Msg.GetMessageId() == MessageConstants.DEVICE_STOP)
 					{
 						Done = true;
 
@@ -381,7 +381,7 @@ class ECSMonitor extends Thread
 
 		Message msg;
 
-		msg = new Message( (int) 99, "XXX" );
+		msg = new Message( MessageConstants.DEVICE_STOP, "XXX" );
 
 		// Here we send the message to the message manager.
 
@@ -421,11 +421,11 @@ class ECSMonitor extends Thread
 
 		if ( ON )
 		{
-			msg = new Message( (int) 5, "H1" );
+			msg = new Message(MessageConstants.HUMI_CTRL, MessageConstants.HUMI_ON);
 
 		} else {
 
-			msg = new Message( (int) 5, "H0" );
+			msg = new Message(MessageConstants.HUMI_CTRL, MessageConstants.HUMI_OFF);
 
 		} // if
 
@@ -467,11 +467,11 @@ class ECSMonitor extends Thread
 
 		if ( ON )
 		{
-			msg = new Message( (int) 5, "C1" );
+			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.CHILLER_ON);
 
 		} else {
 
-			msg = new Message( (int) 5, "C0" );
+			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.CHILLER_OFF);
 
 		} // if
 
@@ -513,11 +513,11 @@ class ECSMonitor extends Thread
 
 		if ( ON )
 		{
-			msg = new Message( (int) 4, "H1" );
+			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.HEATER_ON);
 
 		} else {
 
-			msg = new Message( (int) 4, "H0" );
+			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.HEATER_OFF);
 
 		} // if
 
@@ -559,11 +559,11 @@ class ECSMonitor extends Thread
 
 		if ( ON )
 		{
-			msg = new Message( (int) 4, "D1" );
+			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.CHILLER_ON);
 
 		} else {
 
-			msg = new Message( (int) 4, "D0" );
+			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.CHILLER_OFF);
 
 		} // if
 

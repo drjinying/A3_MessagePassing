@@ -167,9 +167,12 @@ public class MessageUtility
 
 						if (UserInput.IsNumber(Option))
 						{
-							Error = false;
 							MsgId = Integer.valueOf(Option).intValue();
-
+							if (MsgId >= MessageConstants.values().length) {
+								System.out.println( "Please enter an integer value... try again..." );
+							} else {
+								Error = false;		
+							}
 						} else {
 
 						System.out.println( "Please enter an integer value... try again..." );
@@ -186,7 +189,7 @@ public class MessageUtility
 
 					// Here we create the message.
 
-					Msg = new Message( MsgId, Option );
+					Msg = new Message( MessageConstants.values()[MsgId], Option );
 
 					// Here we send the message to the message manager.
 
