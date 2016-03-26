@@ -181,35 +181,18 @@ class WindowSensor
 							SensorState = false;
 							mw.WriteMessage("Window sensor is not disarmed... ");
 
-						} 
+						} 				
 						
 						
-						
-						
-						/*********************************************************/
-						/* I dont understand the logic below.
-						 * 
-						 * When the above statements get executed, wont the sensor state be changed as well?
-						 * If that is true, then wont the below two if conditions be true always?
-						 * 
-						 * I am not sure how u r handling alarm on/ alarm off. If u look at the codes we are using document, 
-						 * the code wb2 and wb3 is for triggering the alarm. Do whatever is needed for that and I think this 
-						 * sensor will be good.
-						 *  				
-						*/
-						/********************************************************/
-						
-						
-						
-						if (Msg.GetMessage().equalsIgnoreCase("wb1") && SensorState) // Sensor is armed and window(s) broke
+						if (Msg.GetMessage().equalsIgnoreCase("wb2") && SensorState) // Sensor is armed and window(s) broke
 						{
 							WindowState = true;
 
 						} // if
 						
-						if (Msg.GetMessage().equalsIgnoreCase("wb0") && SensorState) // Sensor is armed and windows are safe
+						if (Msg.GetMessage().equalsIgnoreCase("wb3") && SensorState) // Sensor is armed and windows are safe
 						{
-							WindowState = true;
+							WindowState = false;
 
 						} // if
 
@@ -267,7 +250,7 @@ class WindowSensor
 	} // main
 
 	/***************************************************************************
-	* CONCRETE METHOD:: PostTemperature
+	* CONCRETE METHOD:: PostWindowState
 	* Purpose: This method posts the specified temperature value to the
 	* specified message manager. This method assumes an message ID of 1.
 	*
