@@ -169,29 +169,30 @@ class WindowSensor
 
 					if ( Msg.GetMessageId() == 25 )
 					{
-						if (Msg.GetMessage().equalsIgnoreCase("WB1")) // Sensor is armed
+						if (Msg.GetMessage().equalsIgnoreCase("wb1")) // Sensor is armed
 						{
 							SensorState = true;
 							mw.WriteMessage("Window sensor is now armed... ");
 
 						} // if
 
-						if (Msg.GetMessage().equalsIgnoreCase("WB0")) // Sensor is disarmed
+						if (Msg.GetMessage().equalsIgnoreCase("wb0")) // Sensor is disarmed
 						{
 							SensorState = false;
 							mw.WriteMessage("Window sensor is not disarmed... ");
 
-						} // if
+						} 				
 						
-						if (Msg.GetMessage().equalsIgnoreCase("W1") && SensorState) // Sensor is armed and window(s) broke
+						
+						if (Msg.GetMessage().equalsIgnoreCase("wb2") && SensorState) // Sensor is armed and window(s) broke
 						{
 							WindowState = true;
 
 						} // if
 						
-						if (Msg.GetMessage().equalsIgnoreCase("W0") && SensorState) // Sensor is armed and windows are safe
+						if (Msg.GetMessage().equalsIgnoreCase("wb3") && SensorState) // Sensor is armed and windows are safe
 						{
-							WindowState = true;
+							WindowState = false;
 
 						} // if
 
@@ -249,7 +250,7 @@ class WindowSensor
 	} // main
 
 	/***************************************************************************
-	* CONCRETE METHOD:: PostTemperature
+	* CONCRETE METHOD:: PostWindowState
 	* Purpose: This method posts the specified temperature value to the
 	* specified message manager. This method assumes an message ID of 1.
 	*
@@ -270,11 +271,11 @@ class WindowSensor
 		Message msg = null;
 		if (State)
 		{
-			msg = new Message( (int) 1, "W1" );
+			msg = new Message( (int) 30, "W1" );
 		}
 		if (!State)
 		{
-			msg = new Message( (int) 1, "W0" );
+			msg = new Message( (int) 30, "W0" );
 		}
 		// Here we send the message to the message manager.
 

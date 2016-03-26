@@ -61,6 +61,7 @@ public class SecurityConsole {
 				System.out.println("1. Set Window Alarm State");
 				System.out.println("2. Set Door break Alarm State");
 				System.out.println("3. Set Motion Detection Alarm State");
+				System.out.println("4. Set Fire Detection Alarm State");
 				System.out.println("X: Stop System\n");
 				System.out.print("\n>>>> ");
 				Option = UserInput.KeyboardReadString();
@@ -94,7 +95,7 @@ public class SecurityConsole {
 									// Call a method in the security monitor
 									// that will allow me to disarm window alarm
 									// Monitor.
-									Monitor.ArmWindowBreak(false);
+									Monitor.DisarmWindowBreak(true);
 									innerError = false;
 									break;
 								case "3":
@@ -142,7 +143,7 @@ public class SecurityConsole {
 									// Call a method in the security monitor
 									// that will allow me to disarm door alarm
 									// Monitor.
-									Monitor.ArmDoorBreak(false);
+									Monitor.DisarmDoorBreak(true);
 									innerError = false;
 									break;
 								case "3":
@@ -187,7 +188,7 @@ public class SecurityConsole {
 									// that will allow me to disarm motion
 									// sensor alarm
 									// Monitor.
-									Monitor.ArmMotionDetection(false);
+									Monitor.DisarmMotionDetection(true);
 									innerError = false;
 									break;
 								case "3":
@@ -196,6 +197,52 @@ public class SecurityConsole {
 								default:
 									System.out.println("Not a valid number, please try again...");
 									break;
+								}
+							} else {
+								System.out.println("Not a valid number, please try again...");
+							} // if
+						} // while
+					}
+
+				} // if
+
+				if (Option.equals("4")) {
+					// Here we get the motion sensor alarm state
+					Error = true;
+					while (Error) {
+						innerError = true;
+						while (innerError) {
+							System.out.println("\nSelect the alarm state ");
+							System.out.println("\n 1. Arm Fire Sensor ");
+							System.out.println("\n 2. Disarm Fire Sensor");
+							System.out.println("\n 3. Go back ");
+							Option = UserInput.KeyboardReadString();
+							if (UserInput.IsNumber(Option)) {
+								Error = false;
+
+								switch (Option) {
+									case "1":
+										// Call a method in the security monitor
+										// that will allow me to arm motion sensor
+										// alarm
+										// Monitor.
+										Monitor.ArmFireDetection(true);
+										innerError = false;
+										break;
+									case "2":
+										// Call a method in the security monitor
+										// that will allow me to disarm motion
+										// sensor alarm
+										// Monitor.
+										Monitor.DisarmFireDetection(true);
+										innerError = false;
+										break;
+									case "3":
+										innerError = false;
+										break;
+									default:
+										System.out.println("Not a valid number, please try again...");
+										break;
 								}
 							} else {
 								System.out.println("Not a valid number, please try again...");

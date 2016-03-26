@@ -20,7 +20,7 @@
 import MessagePackage.Message;
 import TermioPackage.Termio;
 
-public class SecurityConsole {
+public class SecuritySimulationConsole {
 	public static void main(String args[]) {
 		Termio UserInput = new Termio(); // Termio IO Object
 		boolean Done = false; // Main loop flag
@@ -58,9 +58,10 @@ public class SecurityConsole {
 					System.out.println("Using local message manger \n");
 
 				System.out.println("Select an Option: \n");
-				System.out.println("1. Set Window Alarm State");
-				System.out.println("2. Set Door break Alarm State");
-				System.out.println("3. Set Motion Detection Alarm State");
+				System.out.println("1. Window Alarm Simulator");
+				System.out.println("2. Door break Alarm Simulator");
+				System.out.println("3. Motion Detection Alarm Simulator");
+				System.out.println("4. Fire Detection Alarm Simulator");
 				System.out.println("X: Stop System\n");
 				System.out.print("\n>>>> ");
 				Option = UserInput.KeyboardReadString();
@@ -75,8 +76,8 @@ public class SecurityConsole {
 						innerError = true;
 						while (innerError) {
 							System.out.println("\nSelect the alarm state ");
-							System.out.println("\n 1. Arm Window ");
-							System.out.println("\n 2. Disarm Window");
+							System.out.println("\n 1. Raise Window alarm ");
+							System.out.println("\n 2. Stop Window alarm");
 							System.out.println("\n 3. Go back ");
 							Option = UserInput.KeyboardReadString();
 							if (UserInput.IsNumber(Option)) {
@@ -85,16 +86,16 @@ public class SecurityConsole {
 								switch (Option) {
 								case "1":
 									// Call a method in the security monitor
-									// that will allow me to arm window alarm
+									// that will allow me to raise window alarm
 									// Monitor.
-									Monitor.ArmWindowBreak(true);
+									Monitor.SetWindowBroken(1);
 									innerError = false;
 									break;
 								case "2":
 									// Call a method in the security monitor
-									// that will allow me to disarm window alarm
+									// that will allow me to stop window alarm
 									// Monitor.
-									Monitor.ArmWindowBreak(false);
+									Monitor.StopWindowAlarm(1);
 									innerError = false;
 									break;
 								case "3":
@@ -123,8 +124,8 @@ public class SecurityConsole {
 						innerError = true;
 						while (innerError) {
 							System.out.println("\nSelect the alarm state ");
-							System.out.println("\n 1. Arm Door ");
-							System.out.println("\n 2. Disarm Door");
+							System.out.println("\n 1. Raise Door break alarm ");
+							System.out.println("\n 2. Stop Door break alarm");
 							System.out.println("\n 3. Go back ");
 							Option = UserInput.KeyboardReadString();
 							if (UserInput.IsNumber(Option)) {
@@ -135,14 +136,14 @@ public class SecurityConsole {
 									// Call a method in the security monitor
 									// that will allow me to arm door alarm
 									// Monitor.
-									Monitor.ArmDoorBreak(true);
+									Monitor.SetDoorBroken(1);
 									innerError = false;
 									break;
 								case "2":
 									// Call a method in the security monitor
 									// that will allow me to disarm door alarm
 									// Monitor.
-									Monitor.ArmDoorBreak(false);
+									Monitor.StopDoorAlarm(1);
 									innerError = false;
 									break;
 								case "3":
@@ -166,8 +167,8 @@ public class SecurityConsole {
 						innerError = true;
 						while (innerError) {
 							System.out.println("\nSelect the alarm state ");
-							System.out.println("\n 1. Arm Motion Sensor ");
-							System.out.println("\n 2. Disarm Motion Sensor");
+							System.out.println("\n 1. Raise Motion Sensor Alarm ");
+							System.out.println("\n 2. Stop Motion Sensor Alarm");
 							System.out.println("\n 3. Go back ");
 							Option = UserInput.KeyboardReadString();
 							if (UserInput.IsNumber(Option)) {
@@ -176,18 +177,19 @@ public class SecurityConsole {
 								switch (Option) {
 								case "1":
 									// Call a method in the security monitor
-									// that will allow me to arm motion sensor
+									// that will allow me to raise motion sensor
 									// alarm
 									// Monitor.
-									Monitor.ArmMotionDetection(true);
+
+									Monitor.SetMotionDetection(1);
 									innerError = false;
 									break;
 								case "2":
 									// Call a method in the security monitor
-									// that will allow me to disarm motion
+									// that will allow me to stop motion
 									// sensor alarm
 									// Monitor.
-									Monitor.ArmMotionDetection(false);
+									Monitor.StopMotionAlarm(1);
 									innerError = false;
 									break;
 								case "3":
@@ -196,6 +198,63 @@ public class SecurityConsole {
 								default:
 									System.out.println("Not a valid number, please try again...");
 									break;
+								}
+							} else {
+								System.out.println("Not a valid number, please try again...");
+							} // if
+						} // while
+					}
+
+				} // if
+
+				if (Option.equals("4")) {
+					// Here we get the motion sensor alarm state
+					Error = true;
+					while (Error) {
+						innerError = true;
+						while (innerError) {
+							System.out.println("\nSelect the alarm state ");
+							System.out.println("\n 1. Raise Fire Sensor Alarm ");
+							System.out.println("\n 2. Raise Sprinkler");
+							System.out.println("\n 3. Stop Sprinkler");
+							System.out.println("\n 4. Go back ");
+							Option = UserInput.KeyboardReadString();
+							if (UserInput.IsNumber(Option)) {
+								Error = false;
+
+								switch (Option) {
+									case "1":
+										// Call a method in the security monitor
+										// that will allow me to raise motion sensor
+										// alarm
+										// Monitor.
+
+										Monitor.SetFireAlarm(1);
+										innerError = false;
+										break;
+									case "2":
+										// Call a method in the security monitor
+										// that will allow me to stop motion
+										// sensor alarm
+										// Monitor.
+										Monitor.SetSprinkler(1);
+										Monitor.StopFireAlarm(1);
+										innerError = false;
+										break;
+									case "3":
+										// Call a method in the security monitor
+										// that will allow me to stop motion
+										// sensor alarm
+										// Monitor.
+										Monitor.StopSprinkler(1);
+										innerError = false;
+										break;
+									case "4":
+										innerError = false;
+										break;
+									default:
+										System.out.println("Not a valid number, please try again...");
+										break;
 								}
 							} else {
 								System.out.println("Not a valid number, please try again...");

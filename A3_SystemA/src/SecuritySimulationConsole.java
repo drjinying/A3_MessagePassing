@@ -87,14 +87,14 @@ public class SecuritySimulationConsole {
 									// Call a method in the security monitor
 									// that will allow me to raise window alarm
 									// Monitor.
-									Monitor.SetWindowBroken(1);
+									Monitor.SetWindowBrokenAlarm(1);
 									innerError = false;
 									break;
 								case "2":
 									// Call a method in the security monitor
 									// that will allow me to stop window alarm
 									// Monitor.
-									Monitor.StopWindowAlarm(1);
+									Monitor.SetWindowBrokenAlarm(0);
 									innerError = false;
 									break;
 								case "3":
@@ -135,14 +135,14 @@ public class SecuritySimulationConsole {
 									// Call a method in the security monitor
 									// that will allow me to arm door alarm
 									// Monitor.
-									Monitor.SetDoorBroken(1);
+									Monitor.SetDoorBrokenAlarm(1);
 									innerError = false;
 									break;
 								case "2":
 									// Call a method in the security monitor
 									// that will allow me to disarm door alarm
 									// Monitor.
-									Monitor.StopDoorAlarm(1);
+									Monitor.SetDoorBrokenAlarm(0);
 									innerError = false;
 									break;
 								case "3":
@@ -180,7 +180,7 @@ public class SecuritySimulationConsole {
 									// alarm
 									// Monitor.
 
-									Monitor.SetMotionDetection(1);
+									Monitor.SetMotionDetectionAlarm(1);
 									innerError = false;
 									break;
 								case "2":
@@ -188,7 +188,7 @@ public class SecuritySimulationConsole {
 									// that will allow me to stop motion
 									// sensor alarm
 									// Monitor.
-									Monitor.StopMotionAlarm(1);
+									Monitor.SetMotionDetectionAlarm(0);
 									innerError = false;
 									break;
 								case "3":
