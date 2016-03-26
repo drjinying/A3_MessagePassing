@@ -1,5 +1,5 @@
 /******************************************************************************************************************
-* File:WindowSensor.java
+* File:MotionSensor.java
 * Course: 17655
 * Project: Assignment A3
 * Copyright: Copyright (c) 2009 Carnegie Mellon University
@@ -8,20 +8,20 @@
 *
 * Description:
 *
-* This class simulates a window sensor. This class gets the action from simulation monitor, which gets the direct input
+* This class simulates a motion sensor. This class gets the action from simulation monitor, which gets the direct input
 * user by simulation console.
 *
 * Parameters: IP address of the message manager (on command line). If blank, it is assumed that the message manager is
 * on the local machine.
 *
 * Internal Methods:
-*   PostWindowState(MessageManagerInterface ei, boolean State)
+*   PostDoorState(MessageManagerInterface ei, boolean State)
 *
 ******************************************************************************************************************/
 import InstrumentationPackage.*;
 import MessagePackage.*;
 
-class WindowSensor
+class MotionSensor
 {
 	public static void main(String args[])
 	{
@@ -29,8 +29,8 @@ class WindowSensor
 		Message Msg = null;				// Message object
 		MessageQueue eq = null;			// Message Queue
 		MessageManagerInterface em = null;// Interface object to the message manager
-		boolean WindowState = false;	// Window state: false == safe, true == broken
-		boolean SensorState = true;     // Window state: true == armed, false == disarmed
+		boolean MotionState = false;	// Motion state: false == safe, true == broken
+		boolean SensorState = true;     // Motion sensor state: true == armed, false == disarmed
 		int	Delay = 2500;				// The loop delay (2.5 seconds)
 		boolean Done = false;			// Loop termination flag
 
@@ -97,7 +97,7 @@ class WindowSensor
 			float WinPosY = 0.3f; 	//This is the Y position of the message window in terms
 								 	//of a percentage of the screen height
 
-			MessageWindow mw = new MessageWindow("Window Sensor", WinPosX, WinPosY );
+			MessageWindow mw = new MessageWindow("Motion Sensor", WinPosX, WinPosY );
 
 			mw.WriteMessage("Registered with the message manager." );
 
@@ -128,13 +128,13 @@ class WindowSensor
 				// Post the current window state only if the sensor is armed
 				if (SensorState)
 				{
-					PostWindowState(em, WindowState);
-					if (WindowState)
+					PostMotionState(em, MotionState);
+					if (MotionState)
 					{
-						mw.WriteMessage("Current status::  windows(s) broke");
+						mw.WriteMessage("Current status::  Motion detected");
 					} else
 					{
-						mw.WriteMessage("Current status::  All windows are safe");
+						mw.WriteMessage("Current status::  No motion");
 					}
 				}
 				
@@ -166,32 +166,32 @@ class WindowSensor
 				{
 					Msg = eq.GetMessage();
 
-					if ( Msg.GetMessageId() == 25 )
+					if ( Msg.GetMessageId() == 27 )
 					{
-						if (Msg.GetMessage().equalsIgnoreCase("wb1")) // Sensor is armed
+						if (Msg.GetMessage().equalsIgnoreCase("mb1")) // Sensor is armed
 						{
 							SensorState = true;
-							mw.WriteMessage("Window sensor is now armed... ");
+							mw.WriteMessage("Motion sensor is now armed... ");
 
 						} // if
 
-						if (Msg.GetMessage().equalsIgnoreCase("wb0")) // Sensor is disarmed
+						if (Msg.GetMessage().equalsIgnoreCase("mb0")) // Sensor is disarmed
 						{
 							SensorState = false;
-							mw.WriteMessage("Window sensor is not disarmed... ");
+							mw.WriteMessage("Motion sensor is not disarmed... ");
 
 						} 				
 						
 						
-						if (Msg.GetMessage().equalsIgnoreCase("wb2") && SensorState) // Sensor is armed and window(s) broke
+						if (Msg.GetMessage().equalsIgnoreCase("mb2") && SensorState) // Sensor is armed and motion detected
 						{
-							WindowState = true;
+							MotionState = true;
 
 						} // if
 						
-						if (Msg.GetMessage().equalsIgnoreCase("wb3") && SensorState) // Sensor is armed and windows are safe
+						if (Msg.GetMessage().equalsIgnoreCase("mb3") && SensorState) // Sensor is armed and no motion
 						{
-							WindowState = false;
+							MotionState = false;
 
 						} // if
 
@@ -249,14 +249,14 @@ class WindowSensor
 	} // main
 
 	/***************************************************************************
-	* CONCRETE METHOD:: PostWindowState
+	* CONCRETE METHOD:: PostMotionState
 	* Purpose: This method posts the specified temperature value to the
 	* specified message manager. This method assumes an message ID of 1.
 	*
 	* Arguments: MessageManagerInterface ei - this is the messagemanger interface
 	*			 where the message will be posted.
 	*
-	*			 boolean state - this is the state of the window.
+	*			 boolean state - this is the state of the motion.
 	*
 	* Returns: none
 	*
@@ -264,33 +264,33 @@ class WindowSensor
 	*
 	***************************************************************************/
 
-	static private void PostWindowState(MessageManagerInterface ei, boolean State)
+	static private void PostMotionState(MessageManagerInterface ei, boolean State)
 	{
 		// Here we create the message.
 		Message msg = null;
 		if (State)
 		{
-			msg = new Message( (int) 30, "W1" );
+			msg = new Message( (int) 30, "M1" );
 		}
 		if (!State)
 		{
-			msg = new Message( (int) 30, "W0" );
+			msg = new Message( (int) 30, "M0" );
 		}
 		// Here we send the message to the message manager.
 
 		try
 		{
 			ei.SendMessage( msg );
-			//System.out.println( "Sent Window Message" );
+			//System.out.println( "Sent Motion Message" );
 
 		} // try
 
 		catch (Exception e)
 		{
-			System.out.println( "Error Posting Window state:: " + e );
+			System.out.println( "Error Posting Motion state:: " + e );
 
 		} // catch
 
-	} // PostWindowState
+	} // PostMotionState
 
-} // WindowSensor
+} // MotionSensor
