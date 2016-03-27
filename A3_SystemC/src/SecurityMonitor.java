@@ -1,4 +1,9 @@
-
+/*
+ * Author: Ying Jin, Carnegie Mellon University
+ * 
+ * Works with Instrusion Sensor and Controller
+ * Allows alarm and disalarm
+ * */
 public class SecurityMonitor {
 
 	public static void main(String[] args) {
