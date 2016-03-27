@@ -2,7 +2,7 @@ package DevicePackage;
 
 import MessagePackage.MessageConstants;
 
-public class ECSDeviceConfig {
+public class DeviceConfig {
 	float winPosX;
 	float winPosY;
 	String deviceName;
@@ -21,7 +21,7 @@ public class ECSDeviceConfig {
 	boolean isController;
 	
 	// for constructing a sensor
-	public ECSDeviceConfig (float winPosX, float winPosY, 
+	public DeviceConfig (float winPosX, float winPosY, 
 			String sensorName, String deviceID, String deviceDesc, String metricName, String metricUnit, 
 			MessageConstants sendMsgId, MessageConstants readMsgId) 
 	{
@@ -36,7 +36,7 @@ public class ECSDeviceConfig {
 		this.isController = false;
 	}
 	// for constructing a controller
-	public ECSDeviceConfig (float winPosX, float winPosY, 
+	public DeviceConfig (float winPosX, float winPosY, 
 			String deviceName, String deviceID, String deviceDesc, MessageConstants sendMsgId, MessageConstants readMsgId,
 			String valueRaiserName, MessageConstants valueRaiserOnCmd, MessageConstants valueRaiserOffCmd,
 			String valueDropperName, MessageConstants valueDropperOnCmd, MessageConstants valueDropperOffCmd) 

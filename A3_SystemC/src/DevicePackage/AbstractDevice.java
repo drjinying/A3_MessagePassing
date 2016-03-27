@@ -5,7 +5,7 @@ import java.util.Random;
 import InstrumentationPackage.*;
 import MessagePackage.*;
 
-public abstract class ECSDevice {
+public abstract class AbstractDevice {
 	// fields for sensor
 	float metricValue;			// Current simulated metric value(like humidity)
 	float driftValue;			// The amount of metric value gained or lost
@@ -24,14 +24,14 @@ public abstract class ECSDevice {
 	Indicator valueDropperIndc;
 
 	private String msgMgrIP = null;
-	private ECSDeviceConfig deviceConfig;
+	private DeviceConfig deviceConfig;
 	
 	// for initializing a sensor or a controller
-	public ECSDevice(ECSDeviceConfig config) {
+	public AbstractDevice(DeviceConfig config) {
 		deviceConfig = config;
 	}
 	
-	public ECSDevice(String msgMgrIP, ECSDeviceConfig config) {
+	public AbstractDevice(String msgMgrIP, DeviceConfig config) {
 		this.msgMgrIP = msgMgrIP;
 		deviceConfig = config;
 	}
