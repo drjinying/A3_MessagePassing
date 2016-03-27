@@ -24,19 +24,16 @@ public abstract class AbstractDevice {
 	Indicator valueDropperIndc;
 
 	private String msgMgrIP = null;
-	private DeviceConfig deviceConfig;
+	protected DeviceConfig deviceConfig;
 	
 	// for initializing a sensor or a controller
-	public AbstractDevice(DeviceConfig config) {
-		deviceConfig = config;
-	}
+	public AbstractDevice() { }
 	
-	public AbstractDevice(String msgMgrIP, DeviceConfig config) {
+	public AbstractDevice(String msgMgrIP) {
 		this.msgMgrIP = msgMgrIP;
-		deviceConfig = config;
 	}
 	
-	public void main() {
+	public void run() {
 		Message msg = null;							// Message object
 		MessageQueue msgQue = null;					// Message Queue
 		MessageManagerInterface msgMgrIntf = null;	// Interface object to the message manager
