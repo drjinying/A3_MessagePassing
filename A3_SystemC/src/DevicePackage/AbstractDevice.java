@@ -86,7 +86,6 @@ public abstract class AbstractDevice {
 	    	}
 
 			while (!Done) {
-				
 				if (!deviceConfig.isController) {
 					PostFloat(msgMgrIntf, metricValue);
 					mw.WriteMessage("Current " + deviceConfig.metricName + ":: " + metricValue + deviceConfig.metricUnit);
@@ -97,32 +96,43 @@ public abstract class AbstractDevice {
 				} catch(Exception e) {
 					mw.WriteMessage("Error getting message queue::" + e);
 				}
-
+				
 				int qlen = msgQue.GetSize();
 				for (int i = 0; i < qlen; i++) {
 					msg = msgQue.GetMessage();
 					if (msg.GetMessageId() == deviceConfig.readMsgId) {
-						String printContent = "";
-						if (msg.GetMessage().equals(deviceConfig.valueRaiserOnCmd)) {
-							printContent = "Received " + deviceConfig.valueRaiserName + " on message";
+						int printMsgType = 0;
+						if (msg.GetMessage().equals(deviceConfig.valueRaiserOnCmd.toString())) {
+							printMsgType = 1;
 							valueRaiserState = ON;
-						} else if (msg.GetMessage().equals(deviceConfig.valueRaiserOffCmd)) {
-							printContent = "Received " + deviceConfig.valueRaiserName + " off message";
+						} else if (msg.GetMessage().equals(deviceConfig.valueRaiserOffCmd.toString())) {
+							printMsgType = 2;
 							valueRaiserState = OFF;
-						} else if (msg.GetMessage().equals(deviceConfig.valueDropperOnCmd)) {
-							printContent = "Received " + deviceConfig.valueDropperName + " on message"; 
+						} else if (msg.GetMessage().equals(deviceConfig.valueDropperOnCmd.toString())) {
+							printMsgType = 3;
 							valueDropperState = ON;
-						} else if (msg.GetMessage().equals(deviceConfig.valueDropperOffCmd)) {
-							printContent = "Received " + deviceConfig.valueDropperName + " off message";
+						} else if (msg.GetMessage().equals(deviceConfig.valueDropperOffCmd.toString())) {
+							printMsgType = 4;
 							valueDropperState = OFF;
 						}
-						
 						if (deviceConfig.isController) {
+							String printContent = "Unknown";
+							switch (printMsgType) {
+							case 1:
+								printContent = "Received " + deviceConfig.valueRaiserName + " on message"; break;
+							case 2:
+								printContent = "Received " + deviceConfig.valueRaiserName + " off message"; break;
+							case 3:
+								printContent = "Received " + deviceConfig.valueDropperName + " on message"; break;
+							case 4:
+								printContent = "Received " + deviceConfig.valueDropperName + " off message"; break;
+							case 0:
+								printContent = "INVALID MESSAGE";
+							}
 							mw.WriteMessage(printContent);
 							ConfirmMessage(msgMgrIntf, msg.GetMessage());
-						}						
-					}
-
+						}							
+					}				
 					if (msg.GetMessageId() == MessageConstants.DEVICE_STOP){
 						Done = true;
 						try {
@@ -152,11 +162,10 @@ public abstract class AbstractDevice {
 						metricValue -= GetRandomNumber();
 					}
 				}
-
 				try {
 					Thread.sleep(Delay);
 				} catch(Exception e) {
-					System.out.println( "Sleep error:: " + e );
+					mw.WriteMessage( "Sleep error:: " + e );
 				}
 			}
 		} else {

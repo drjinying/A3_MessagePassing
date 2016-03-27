@@ -92,14 +92,14 @@ class ECSMonitor extends Thread
 				int qlen = eq.GetSize();
 				for ( int i = 0; i < qlen; i++ ){
 					Msg = eq.GetMessage();
-					if ( Msg.GetMessageId() == MessageConstants.CSL_TEMP){
+					if ( Msg.GetMessageId() == MessageConstants.TEMP_DATA){
 						try{
 							CurrentTemperature = Float.valueOf(Msg.GetMessage()).floatValue();
 						} catch( Exception e ) {
 							mw.WriteMessage("Error reading temperature: " + e);
 						}
 					} 
-					if ( Msg.GetMessageId() == MessageConstants.CSL_HUMI){
+					if ( Msg.GetMessageId() == MessageConstants.HUMI_DATA){
 						try {
 							CurrentHumidity = Float.valueOf(Msg.GetMessage()).floatValue();
 						} catch( Exception e ){
@@ -197,9 +197,9 @@ class ECSMonitor extends Thread
 	private void Heater( boolean ON ){
 		Message msg;
 		if ( ON ){
-			msg = new Message(MessageConstants.HUMI_CTRL, MessageConstants.HUMI_ON);
+			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.HEATER_ON);
 		} else {
-			msg = new Message(MessageConstants.HUMI_CTRL, MessageConstants.HUMI_OFF);
+			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.HEATER_OFF);
 		}
 		try{
 			em.SendMessage( msg );
@@ -225,9 +225,9 @@ class ECSMonitor extends Thread
 	private void Humidifier( boolean ON ){
 		Message msg;
 		if ( ON ){
-			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.HEATER_ON);
+			msg = new Message(MessageConstants.HUMI_CTRL, MessageConstants.HUMI_ON);
 		} else {
-			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.HEATER_OFF);
+			msg = new Message(MessageConstants.HUMI_CTRL, MessageConstants.HUMI_OFF);
 		}
 		try{
 			em.SendMessage( msg );
@@ -239,9 +239,9 @@ class ECSMonitor extends Thread
 	private void Dehumidifier( boolean ON ){
 		Message msg;
 		if ( ON ){
-			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.CHILLER_ON);
+			msg = new Message(MessageConstants.HUMI_CTRL, MessageConstants.DEHUMI_ON);
 		} else {
-			msg = new Message(MessageConstants.TEMP_CTRL, MessageConstants.CHILLER_OFF);
+			msg = new Message(MessageConstants.HUMI_CTRL, MessageConstants.DEHUMI_OFF);
 		}
 		try{
 			em.SendMessage( msg );
