@@ -15,7 +15,7 @@
 * on the local machine.
 *
 * Internal Methods:
-*   PostDoorState(MessageManagerInterface ei, boolean State)
+*   PostMotionState(MessageManagerInterface ei, boolean State)
 *
 ******************************************************************************************************************/
 import InstrumentationPackage.*;
@@ -168,28 +168,29 @@ class MotionSensor
 
 					if ( Msg.GetMessageId() == 27 )
 					{
-						if (Msg.GetMessage().equalsIgnoreCase("mb1")) // Sensor is armed
+						if (Msg.GetMessage().equalsIgnoreCase("md1")) // Sensor is armed
 						{
 							SensorState = true;
 							mw.WriteMessage("Motion sensor is now armed... ");
 
 						} // if
 
-						if (Msg.GetMessage().equalsIgnoreCase("mb0")) // Sensor is disarmed
+						if (Msg.GetMessage().equalsIgnoreCase("md0")) // Sensor is disarmed
 						{
 							SensorState = false;
-							mw.WriteMessage("Motion sensor is not disarmed... ");
+							mw.WriteMessage("Motion sensor is now disarmed... ");
+							SendSensorStateConfirmation(em,"mb0");
 
 						} 				
 						
 						
-						if (Msg.GetMessage().equalsIgnoreCase("mb2") && SensorState) // Sensor is armed and motion detected
+						if (Msg.GetMessage().equalsIgnoreCase("md2") && SensorState) // Sensor is armed and motion detected
 						{
 							MotionState = true;
 
 						} // if
 						
-						if (Msg.GetMessage().equalsIgnoreCase("mb3") && SensorState) // Sensor is armed and no motion
+						if (Msg.GetMessage().equalsIgnoreCase("md3") && SensorState) // Sensor is armed and no motion
 						{
 							MotionState = false;
 
@@ -292,5 +293,26 @@ class MotionSensor
 		} // catch
 
 	} // PostMotionState
+	
+	static private void SendSensorStateConfirmation(MessageManagerInterface ei, String State)
+	{
+		// Here we create the message.
+			Message msg = new Message( (int) -27, State );
+		// Here we send the message to the message manager.
+
+		try
+		{
+			ei.SendMessage( msg );
+			//System.out.println( "Sent Window Message" );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println( "Error Sending Motion Alarm Confirmation:: " + e );
+
+		} // catch
+
+	} // SendSensorStateConfirmation
 
 } // MotionSensor

@@ -66,13 +66,9 @@ class SecurityMonitor extends Thread
 		Message Msg = null;				// Message object
 		MessageQueue eq = null;			// Message Queue
 		int MsgId = 0;					// User specified message ID
-		int CurrentWindowAlarm = 0;
-		int CurrentDoorAlarm= 0;
-		int CurrentMotionAlarm = 0;
+		String SecurityMsg = null;		// The Security status
 		int	Delay = 1000;				// The loop delay (1 second)
-		boolean Done = false;			// Loop termination flag
-		boolean ON = true;				
-		boolean OFF = false;			
+		boolean Done = false;			// Loop termination flag		
 
 
 
@@ -80,9 +76,9 @@ class SecurityMonitor extends Thread
 		 {
 			
 			mw = new MessageWindow("Security Monitoring Console", 0, 0);
-			wi = new Indicator ("Window break UNK", mw.GetX()+ mw.Width(), 0);
-			di = new Indicator ("Door break UNK", mw.GetX()+ mw.Width(), 0 );
-			mi = new Indicator ("Motion detection UNK", mw.GetX()+ mw.Width(), 0);
+			wi = new Indicator ("Window Sensor", mw.GetX()+ mw.Width(), (int)(mw.Height()/2));
+			di = new Indicator ("Door Sensor", mw.GetX()+ mw.Width() + (int)(wi.Width()*2), (int)(mw.Height()/2));
+			mi = new Indicator ("Motion Sensor", mw.GetX()+ mw.Width() + (int)(wi.Width()*4), (int)(mw.Height()/2));
 
 
 			mw.WriteMessage( "Registered with the message manager." );
@@ -132,13 +128,44 @@ class SecurityMonitor extends Thread
 				for ( int i = 0; i < qlen; i++ )
 				{
 					Msg = eq.GetMessage();
-
-					if ( Msg.GetMessageId() == 21 ) 
+					
+					// Received data from sensors
+					if ( Msg.GetMessageId() == 30 ) 
 					{
 						try
 						{
-							CurrentWindowAlarm = Integer.valueOf(Msg.GetMessage()).intValue();
-
+							SecurityMsg = String.valueOf(Msg.GetMessage());
+							// Write message to the message window and set alarm accordingly
+							if (SecurityMsg.equalsIgnoreCase("W0")){
+								mw.WriteMessage("Window Status:: Safe");
+								PostSecurityAlarmStatus(em, "WA0");
+								wi.SetLampColorAndMessage("Window Safe", 1);
+							}
+							if (SecurityMsg.equalsIgnoreCase("W1")){
+								mw.WriteMessage("Window Status:: Broken");
+								PostSecurityAlarmStatus(em, "WA1");
+								wi.SetLampColorAndMessage("Window Breaks", 3);
+							}
+							if (SecurityMsg.equalsIgnoreCase("D0")){
+								mw.WriteMessage("Door Status:: Safe");
+								PostSecurityAlarmStatus(em, "DA0");
+								di.SetLampColorAndMessage("Door Safe", 1);
+							}
+							if (SecurityMsg.equalsIgnoreCase("D1")){
+								mw.WriteMessage("Door Status:: Broken");
+								PostSecurityAlarmStatus(em, "DA1");
+								di.SetLampColorAndMessage("Door Breaks", 3);
+							}
+							if (SecurityMsg.equalsIgnoreCase("M0")){
+								mw.WriteMessage("Motion Status:: No motion");
+								PostSecurityAlarmStatus(em, "MA0");
+								mi.SetLampColorAndMessage("No motion", 1);
+							}
+							if (SecurityMsg.equalsIgnoreCase("M1")){
+								mw.WriteMessage("Motion Status:: Motion detected");
+								PostSecurityAlarmStatus(em, "MA1");
+								mi.SetLampColorAndMessage("Motion detected", 3);
+							}
 						} // try
 
 						catch( Exception e )
@@ -148,40 +175,54 @@ class SecurityMonitor extends Thread
 						} // catch
 
 					} // if
-
-					if ( Msg.GetMessageId() == 22 ) 
-					{
+					
+					if ( Msg.GetMessageId() == -25 ){
 						try
 						{
-
-							CurrentDoorAlarm = Integer.valueOf(Msg.GetMessage()).intValue();
-
-						} // try
-
+							SecurityMsg = String.valueOf(Msg.GetMessage());
+							// Write message to the message window and set alarm accordingly
+							if (SecurityMsg.equalsIgnoreCase("WB0")){
+								wi.SetLampColorAndMessage("Window Disarmed", 0);
+							}
+						}
 						catch( Exception e )
 						{
-							mw.WriteMessage("Error reading door: " + e);
+							mw.WriteMessage("Error reading window: " + e);
 
 						} // catch
-
-					} // if
-
-					if ( Msg.GetMessageId() == 23 ) 
-					{
+					}
+					
+					if ( Msg.GetMessageId() == -26 ){
 						try
 						{
-
-							CurrentMotionAlarm = Integer.valueOf(Msg.GetMessage()).intValue();
-
-						} // try
-
+							SecurityMsg = String.valueOf(Msg.GetMessage());
+							// Write message to the message window and set alarm accordingly
+							if (SecurityMsg.equalsIgnoreCase("DB0")){
+								di.SetLampColorAndMessage("Door Disarmed", 0);
+							}
+						}
 						catch( Exception e )
 						{
-							mw.WriteMessage("Error reading motion: " + e);
+							mw.WriteMessage("Error reading window: " + e);
 
 						} // catch
+					}
+					
+					if ( Msg.GetMessageId() == -27 ){
+						try
+						{
+							SecurityMsg = String.valueOf(Msg.GetMessage());
+							// Write message to the message window and set alarm accordingly
+							if (SecurityMsg.equalsIgnoreCase("MB0")){
+								mi.SetLampColorAndMessage("Motion Disarmed", 0);
+							}
+						}
+						catch( Exception e )
+						{
+							mw.WriteMessage("Error reading window: " + e);
 
-					} // if
+						} // catch
+					}
 
 					// If the message ID == 99 then this is a signal that the simulation
 					// is to end. At this point, the loop termination flag is set to
@@ -216,48 +257,7 @@ class SecurityMonitor extends Thread
 
 				} // for
 
-				mw.WriteMessage("Window Alarm:: " + CurrentWindowAlarm + "Door Alarm:: " + CurrentDoorAlarm + "Motion Alarm:: " + CurrentMotionAlarm );
-
-				// Check temperature and effect control as necessary
-
-				if (CurrentWindowAlarm  == 0) // window break is disarm
-				{
-					wi.SetLampColorAndMessage("window break is arm", 1);
-					ArmWindowBreak(ON);
-
-				} else {
-					
-					wi.SetLampColorAndMessage("window break is disarm", 3);
-					ArmWindowBreak(OFF);
-
-					
-				} // if
-
 				
-				if (CurrentDoorAlarm == 0)
-				{
-					di.SetLampColorAndMessage("door break is arm", 1); // door break is disarm
-					ArmDoorBreak(ON);
-
-				} else {
-
-					di.SetLampColorAndMessage("door break is disarm", 3);
-					ArmDoorBreak(OFF);
-					
-				} // if
-
-				if (CurrentMotionAlarm == 0)
-				{
-					mi.SetLampColorAndMessage("motion detection is on", 1); // motion detection is off
-					ArmMotionDetection(ON);
-
-				} else {
-
-					mi.SetLampColorAndMessage("motion detection is off", 3);
-					ArmMotionDetection(OFF);
-
-				} // if
-
 				// This delay slows down the sample rate to Delay milliseconds
 
 				try
@@ -349,11 +349,11 @@ class SecurityMonitor extends Thread
 
 		if ( status )
 		{
-			msg = new Message( 25, "wba1" );
+			msg = new Message( 25, "wb1" ); // arm
 
 		} else {
 
-			msg = new Message( 25, "wba0" );
+			msg = new Message( 25, "wb0" ); // disarm
 
 		} // if
 
@@ -380,11 +380,11 @@ class SecurityMonitor extends Thread
 
 		if ( status)
 		{
-			msg = new Message( 26, "dba1" );
+			msg = new Message( 26, "db1" ); // arm
 
 		} else{
 
-			msg = new Message( 26, "dba0" );
+			msg = new Message( 26, "db0" ); // disarm
 
 		} // if
 
@@ -411,11 +411,11 @@ class SecurityMonitor extends Thread
 
 		if ( status )
 		{
-			msg = new Message( 27, "ma1" );
+			msg = new Message( 27, "md1" ); // arm
 
 		} else {
 
-			msg = new Message( 27, "ma0" );
+			msg = new Message( 27, "md0" ); // disarm
 
 		} // if
 
@@ -436,23 +436,23 @@ class SecurityMonitor extends Thread
 	}
 
 	/**********
-	Alarms
+	Send window, door, and motion simulation data to the sensors
 	***********/
 
 	
-	public void SetWindowBrokenAlarm( int status )
+	public void SendWindowData( int status )
 	{
 		// Here we create the message.
 
 		Message msg = null;
 
-		if ( status==1 )
+		if ( status == 1 )
 		{
-			msg = new Message( 25, "wb2" );
+			msg = new Message( 25, "wb2" ); // window breaks
 
-		} else if(status==0){
+		} else if(status == 0){
 
-			msg = new Message( 25, "wb3" );
+			msg = new Message( 25, "wb3" ); // window safe
 
 		} // if
 
@@ -472,19 +472,19 @@ class SecurityMonitor extends Thread
 
 	} 
 	
-	public void SetDoorBrokenAlarm( int status )
+	public void SendDoorData( int status )
 	{
 		// Here we create the message.
 
 		Message msg = null;
 
-		if ( status ==1 )
+		if ( status == 1 )
 		{
-			msg = new Message( 26, "db2" );
+			msg = new Message( 26, "db2" ); // door breaks
 
-		} else if(status ==0) {
+		} else if(status == 0) {
 
-			msg = new Message( 26, "db3" );
+			msg = new Message( 26, "db3" ); // door safe
 
 		} // if
 
@@ -504,18 +504,18 @@ class SecurityMonitor extends Thread
 
 	} 
 	
-	public void SetMotionDetectionAlarm ( int status)
+	public void SendMotionData ( int status)
 	{
 		// Here we create the message.
 
 		Message msg = null;
-		if(status==1)
+		if(status == 1)
 		{
-			msg = new Message( 27, "m2" );
+			msg = new Message( 27, "md2" ); // motion detected
 
-		} else if(status==0) {
+		} else if(status == 0) {
 
-			msg = new Message( 27, "m3" );
+			msg = new Message( 27, "md3" ); // no motion
 
 		} // if
 
@@ -535,6 +535,42 @@ class SecurityMonitor extends Thread
 
 	} 
 
+	/***************************************************************************
+	* CONCRETE METHOD:: PostWindowState
+	* Purpose: This method posts the specified temperature value to the
+	* specified message manager. This method assumes an message ID of 1.
+	*
+	* Arguments: MessageManagerInterface ei - this is the messagemanger interface
+	*			 where the message will be posted.
+	*
+	*			 boolean state - this is the state of the window.
+	*
+	* Returns: none
+	*
+	* Exceptions: None
+	*
+	***************************************************************************/
 
+	static private void PostSecurityAlarmStatus(MessageManagerInterface ei, String State)
+	{
+		// Here we create the message.
+		Message msg = new Message( (int) 35, State );
+		
+		// Here we send the message to the message manager.
+
+		try
+		{
+			ei.SendMessage( msg );
+			//System.out.println( "Sent Window Message" );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println( "Error Posting Window state:: " + e );
+
+		} // catch
+
+	} // PostWindowState
 
 } 

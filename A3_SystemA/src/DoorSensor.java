@@ -97,7 +97,7 @@ class DoorSensor
 			float WinPosY = 0.3f; 	//This is the Y position of the message window in terms
 								 	//of a percentage of the screen height
 
-			MessageWindow mw = new MessageWindow("Motion Sensor", WinPosX, WinPosY );
+			MessageWindow mw = new MessageWindow("Door Sensor", WinPosX, WinPosY );
 
 			mw.WriteMessage("Registered with the message manager." );
 
@@ -178,7 +178,8 @@ class DoorSensor
 						if (Msg.GetMessage().equalsIgnoreCase("db0")) // Sensor is disarmed
 						{
 							SensorState = false;
-							mw.WriteMessage("Door sensor is not disarmed... ");
+							mw.WriteMessage("Door sensor is now disarmed... ");
+							SendSensorStateConfirmation(em,"db0");
 
 						} 				
 						
@@ -292,5 +293,26 @@ class DoorSensor
 		} // catch
 
 	} // PostDoorState
+	
+	static private void SendSensorStateConfirmation(MessageManagerInterface ei, String State)
+	{
+		// Here we create the message.
+			Message msg = new Message( (int) -26, State );
+		// Here we send the message to the message manager.
+
+		try
+		{
+			ei.SendMessage( msg );
+			//System.out.println( "Sent Window Message" );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println( "Error Sending Door Alarm Confirmation:: " + e );
+
+		} // catch
+
+	} // SendSensorStateConfirmation
 
 } // DoorSensor

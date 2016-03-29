@@ -1,6 +1,6 @@
 
 /******************************************************************************************************************
-* File:TemperatureController.java
+* File:SecurityController.java
 * Course: 17655
 * Project: Assignment A3
 * Copyright: Copyright (c) 2009 Carnegie Mellon University
@@ -9,18 +9,8 @@
 *
 * Description:
 *
-* This class simulates a device that controls a heater and chiller. It polls the message manager for message ids = 5
-* and reacts to them by turning on or off the heater or chiller. The following command are valid strings for con
-* trolling the heater and chiller:
-*
-*	H1 = heater on
-*	H0 = heater off
-*	C1 = chillerer on
-*	C0 = chiller off
-*
-* The state (on/off) is graphically displayed on the terminal in the indicator. Command messages are displayed in
-* the message window. Once a valid command is recieved a confirmation message is sent with the id of -5 and the command in
-* the command string.
+* This class simulates a device that turn on and off the security alarm based on the status received from the security 
+* monitor.
 *
 * Parameters: IP address of the message manager (on command line). If blank, it is assumed that the message manager is
 * on the local machine.
@@ -39,16 +29,13 @@ class SecurityController {
 		Message Msg = null; // Message object
 		MessageQueue eq = null; // Message Queue
 		int MsgId = 0; // User specified message ID
-		MessageManagerInterface em = null; // Interface object to the message
-											// manager
-		boolean doorBreakAlarmState = false; // Heater state: false == off, true
-												// == on
-		boolean windowBreakAlarmState = false; // Chiller state: false == off,
-												// true == on
+		MessageManagerInterface em = null;
+		boolean doorBreakAlarmState = false;
+		boolean windowBreakAlarmState = false;
 		boolean motionBreakAlarmState = false;
 		int Delay = 2500; // The loop delay (2.5 seconds)
 		boolean Done = false; // Loop termination flag
-
+		
 		/////////////////////////////////////////////////////////////////////////////////
 		// Get the IP address of the message manager
 		/////////////////////////////////////////////////////////////////////////////////
@@ -118,9 +105,9 @@ class SecurityController {
 
 			// Put the status indicators under the panel...
 
-			Indicator wi = new Indicator("Window break UNK", mw.GetX() + mw.Width(), 0);
-			Indicator di = new Indicator("Door break UNK", mw.GetX() + mw.Width(), 0);
-			Indicator mi = new Indicator("Motion detection UNK", mw.GetX() + mw.Width(), 0);
+			Indicator wi = new Indicator("Window Alarm", mw.GetX() + mw.Width(), 0);
+			Indicator di = new Indicator("Door Alarm", mw.GetX() + mw.Width() + (wi.Width()*2), 0);
+			Indicator mi = new Indicator("Motion Alarm", mw.GetX() + mw.Width() + wi.Width()*4, 0);
 
 			mw.WriteMessage("Registered with the message manager.");
 
@@ -167,85 +154,46 @@ class SecurityController {
 				for (int i = 0; i < qlen; i++) {
 					Msg = eq.GetMessage();
 
-					if (Msg.GetMessageId() == 25) {
-						if (Msg.GetMessage().equalsIgnoreCase("db1")) // heater
-																		// on
-						{
-
-							doorBreakAlarmState = true;
-
-							mw.WriteMessage("Received turn on door break alarm message");
-
-							// Confirm that the message was recieved and acted
-							// on
-
-							ConfirmMessage(em, "db1",Msg.GetMessageId());
-
-						} // if
-
-						if (Msg.GetMessage().equalsIgnoreCase("db0")) // heater
-																		// off
-						{
-							doorBreakAlarmState = false;
-							mw.WriteMessage("Received turn off door break alarm message");
-
-							// Confirm that the message was recieved and acted
-							// on
-
-							ConfirmMessage(em, "db0",Msg.GetMessageId());
-
-						} // if
-					}
-					if (Msg.GetMessageId() == 26) {
-
-						if (Msg.GetMessage().equalsIgnoreCase("wb1")) // chiller
-																		// on
+					if (Msg.GetMessageId() == 35) {
+						
+						if (Msg.GetMessage().equalsIgnoreCase("WA1")) // turn on window alarm
 						{
 							windowBreakAlarmState = true;
 							mw.WriteMessage("Received turn on window alarm message");
-							// Confirm that the message was recieved and acted
-							// on
-							ConfirmMessage(em, "wb1",Msg.GetMessageId());
-
 						} // if
-
-						if (Msg.GetMessage().equalsIgnoreCase("wb0")) // chiller
-																		// off
+						
+						if (Msg.GetMessage().equalsIgnoreCase("WA0")) // turn off window alarm
 						{
 							windowBreakAlarmState = false;
 							mw.WriteMessage("Received turn off window alarm message");
+						} // if
+						
+						if (Msg.GetMessage().equalsIgnoreCase("DA1")) // turn on door alarm
+						{
+							doorBreakAlarmState = true;
+							mw.WriteMessage("Received turn on door alarm message");
+						} // if
 
-							// Confirm that the message was recieved and acted
-							// on
-
-							ConfirmMessage(em, "wb0",Msg.GetMessageId());
+						if (Msg.GetMessage().equalsIgnoreCase("DA0")) // Turn off door alarm
+						{
+							doorBreakAlarmState = false;
+							mw.WriteMessage("Received turn off door alarm message");
 
 						} // if
-					}
-					if (Msg.GetMessageId() == 27) {
-						if (Msg.GetMessage().equalsIgnoreCase("m1")) // chiller
-																		// on
+						
+						if (Msg.GetMessage().equalsIgnoreCase("MA1")) // turn on motion alarm
 						{
 							motionBreakAlarmState = true;
-							mw.WriteMessage("Received turn on motion sensor alarm message");
-							// Confirm that the message was recieved and acted
-							// on
-							ConfirmMessage(em, "m1",Msg.GetMessageId());
-
+							mw.WriteMessage("Received turn on motion alarm message");
 						} // if
 
-						if (Msg.GetMessage().equalsIgnoreCase("m0")) // chiller
-																		// off
+						if (Msg.GetMessage().equalsIgnoreCase("MA0")) // Turn off motion alarm
 						{
 							motionBreakAlarmState = false;
-							mw.WriteMessage("Received turn off motion sensor alarm message");
-
-							// Confirm that the message was recieved and acted
-							// on
-
-							ConfirmMessage(em, "m0",Msg.GetMessageId());
+							mw.WriteMessage("Received turn off motion alarm message");
 
 						} // if
+						
 					}
 				
 
@@ -284,17 +232,17 @@ class SecurityController {
 			// Update the lamp status
 
 			if (doorBreakAlarmState)
-				di.SetLampColorAndMessage("Door Break Alarm Active", 1);
+				di.SetLampColorAndMessage("Door Alarm Active", 3);
 			else
-				di.SetLampColorAndMessage("Door Break Alarm Inactive", 0);
+				di.SetLampColorAndMessage("Door Alarm Inactive", 1);
 			if (windowBreakAlarmState)
-				wi.SetLampColorAndMessage("Window Break Alarm Active", 1);
+				wi.SetLampColorAndMessage("Window Alarm Active", 3);
 			else
-				wi.SetLampColorAndMessage("Window Break Alarm Inactive", 0);
+				wi.SetLampColorAndMessage("Window Alarm Inactive", 1);
 			if (motionBreakAlarmState)
-				mi.SetLampColorAndMessage("Motion Detection Alarm Active", 1);
+				mi.SetLampColorAndMessage("Motion Alarm Active", 3);
 			else
-				mi.SetLampColorAndMessage("Motion Detection Alarm Inactive", 0);
+				mi.SetLampColorAndMessage("Motion Alarm Inactive", 1);
 
 			try {
 				Thread.sleep(Delay);
@@ -318,39 +266,5 @@ class SecurityController {
 
 	} // main
 
-	/***************************************************************************
-	 * CONCRETE METHOD:: ConfirmMessage Purpose: This method posts the specified
-	 * message to the specified message manager. This method assumes an message
-	 * ID of -5 which indicates a confirma- tion of a command.
-	 *
-	 * Arguments: MessageManagerInterface ei - this is the messagemanger
-	 * interface where the message will be posted.
-	 *
-	 * string m - this is the received command.
-	 *
-	 * Returns: none
-	 *
-	 * Exceptions: None
-	 *
-	 ***************************************************************************/
-
-	static private void ConfirmMessage(MessageManagerInterface ei, String m,int id) {
-		// Here we create the message.
-
-		Message msg = new Message( -1 * id , m);
-
-		// Here we send the message to the message manager.
-
-		try {
-			ei.SendMessage(msg);
-
-		} // try
-
-		catch (Exception e) {
-			System.out.println("Error Confirming Message:: " + e);
-
-		} // catch
-
-	} // PostMessage
 
 } // TemperatureController

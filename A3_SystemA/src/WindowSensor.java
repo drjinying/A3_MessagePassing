@@ -172,13 +172,15 @@ class WindowSensor
 						{
 							SensorState = true;
 							mw.WriteMessage("Window sensor is now armed... ");
+							SendSensorStateConfirmation(em,"wb1");
 
 						} // if
 
 						if (Msg.GetMessage().equalsIgnoreCase("wb0")) // Sensor is disarmed
 						{
 							SensorState = false;
-							mw.WriteMessage("Window sensor is not disarmed... ");
+							mw.WriteMessage("Window sensor is now disarmed... ");
+							SendSensorStateConfirmation(em,"wb0");
 
 						} 				
 						
@@ -250,8 +252,8 @@ class WindowSensor
 
 	/***************************************************************************
 	* CONCRETE METHOD:: PostWindowState
-	* Purpose: This method posts the specified temperature value to the
-	* specified message manager. This method assumes an message ID of 1.
+	* Purpose: This method posts the specified window state to the
+	* specified message manager. This method assumes an message ID of 30.
 	*
 	* Arguments: MessageManagerInterface ei - this is the messagemanger interface
 	*			 where the message will be posted.
@@ -292,5 +294,26 @@ class WindowSensor
 		} // catch
 
 	} // PostWindowState
+	
+	static private void SendSensorStateConfirmation(MessageManagerInterface ei, String State)
+	{
+		// Here we create the message.
+			Message msg = new Message( (int) -25, State );
+		// Here we send the message to the message manager.
+
+		try
+		{
+			ei.SendMessage( msg );
+			//System.out.println( "Sent Window Message" );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println( "Error Sending Window Alarm Confirmation:: " + e );
+
+		} // catch
+
+	} // SendSensorStateConfirmation
 
 } // WindowSensor
