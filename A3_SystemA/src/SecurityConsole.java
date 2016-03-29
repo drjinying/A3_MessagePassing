@@ -1,16 +1,16 @@
 
 /******************************************************************************************************************
-* File:ECSConsole.java
+* File:SecurityConsole.java
 * Course: 17655
 * Project: Assignment 3
 * Copyright: Copyright (c) 2009 Carnegie Mellon University
 * Versions:
 *	1.0 February 2009 - Initial rewrite of original assignment 3 (ajl).
 *
-* Description: This class is the console for the museum environmental control system. This process consists of two
-* threads. The ECSMonitor object is a thread that is started that is responsible for the monitoring and control of
-* the museum environmental systems. The main thread provides a text interface for the user to change the temperature
-* and humidity ranges, as well as shut down the system.
+* Description: This class is the console for the museum security control system. This process consists of two
+* threads. The SecurityMonitor object is a thread that is started that is responsible for the monitoring and control of
+* the museum security systems. The main thread provides a text interface for the user to arm and disarm the window sensor,
+* door sensor, motion detection sensor, as well as shut down the system.
 *
 * Parameters: None
 *
@@ -75,8 +75,8 @@ public class SecurityConsole {
 						innerError = true;
 						while (innerError) {
 							System.out.println("\nSelect the alarm state ");
-							System.out.println("\n 1. Arm Window ");
-							System.out.println("\n 2. Disarm Window");
+							System.out.println("\n 1. Arm Window Sensor ");
+							System.out.println("\n 2. Disarm Window Sensor");
 							System.out.println("\n 3. Go back ");
 							Option = UserInput.KeyboardReadString();
 							if (UserInput.IsNumber(Option)) {
@@ -123,9 +123,9 @@ public class SecurityConsole {
 						innerError = true;
 						while (innerError) {
 							System.out.println("\nSelect the alarm state ");
-							System.out.println("\n 1. Arm Door ");
-							System.out.println("\n 2. Disarm Door");
-							System.out.println("\n 3. Go back ");
+							System.out.println("\n 1. Arm Door Sensor");
+							System.out.println("\n 2. Disarm Door Sensor");
+							System.out.println("\n 3. Go back");
 							Option = UserInput.KeyboardReadString();
 							if (UserInput.IsNumber(Option)) {
 								Error = false;
@@ -166,8 +166,8 @@ public class SecurityConsole {
 						innerError = true;
 						while (innerError) {
 							System.out.println("\nSelect the alarm state ");
-							System.out.println("\n 1. Arm Motion Sensor ");
-							System.out.println("\n 2. Disarm Motion Sensor");
+							System.out.println("\n 1. Arm Motion Detection Sensor ");
+							System.out.println("\n 2. Disarm Motion Detection Sensor");
 							System.out.println("\n 3. Go back ");
 							Option = UserInput.KeyboardReadString();
 							if (UserInput.IsNumber(Option)) {
