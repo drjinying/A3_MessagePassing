@@ -1,23 +1,22 @@
 
-import InstrumentationPackage.*;
-import MessagePackage.*;
-import java.util.*;
+import InstrumentationPackage.Indicator;
+import InstrumentationPackage.MessageWindow;
+import MessagePackage.Message;
+import MessagePackage.MessageManagerInterface;
+import MessagePackage.MessageQueue;
 
 class SecurityMonitor extends Thread
 {
 	private MessageManagerInterface em = null;	
 	private String MsgMgrIP = null;				
-	private int WindowState = 0;
-	private int DoorState  = 0;
-	private int MotionState  = 0;
-	private int FireState  = 0;
+
 	boolean Registered = true;					
 	MessageWindow mw = null;					// This is the message window
 	Indicator wi;								// Window break indicator
 	Indicator di;								// Door break indicator
 	Indicator mi;								// Motion Detection indicator
 	Indicator fi;								// Fire Detection indicator
-	Indicator si;								// Fire Detection indicator
+	Indicator si;								// Sprinkler indicator
 
 
 	public SecurityMonitor()
@@ -63,20 +62,15 @@ class SecurityMonitor extends Thread
 
 	} // Constructor
 
+	@Override
 	public void run()
 	{
 		Message Msg = null;				// Message object
 		MessageQueue eq = null;			// Message Queue
 		int MsgId = 0;					// User specified message ID
-		int CurrentWindowAlarm = 0;
-		int CurrentDoorAlarm= 0;
-		int CurrentMotionAlarm = 0;
-		int CurrentFireAlarm = 0;
-		int CurrentSprinkler = 0;
+		String SecurityMsg = null;		// The Security status
 		int	Delay = 1000;				// The loop delay (1 second)
-		boolean Done = false;			// Loop termination flag
-		boolean ON = true;				
-		boolean OFF = false;			
+		boolean Done = false;			// Loop termination flag		
 
 
 
@@ -84,11 +78,11 @@ class SecurityMonitor extends Thread
 		 {
 			
 			mw = new MessageWindow("Security Monitoring Console", 0, 0);
-			wi = new Indicator ("Window break UNK", mw.GetX()+ mw.Width(), 0);
-			di = new Indicator ("Door break UNK", mw.GetX()+ mw.Width(), 0 );
-			mi = new Indicator ("Motion detection UNK", mw.GetX()+ mw.Width(), 0);
-			 fi = new Indicator ("Fire detection UNK", mw.GetX()+ mw.Width(), 0);
-			 si = new Indicator ("Sprinkler UNK", mw.GetX()+ mw.Width(), 0);
+			wi = new Indicator ("Window Sensor", mw.GetX()+ mw.Width(), (int)(mw.Height()/2));
+			di = new Indicator ("Door Sensor", mw.GetX()+ mw.Width() + (int)(wi.Width()*2), (int)(mw.Height()/2));
+			mi = new Indicator ("Motion Sensor", mw.GetX()+ mw.Width() + (int)(wi.Width()*4), (int)(mw.Height()/2));
+			 fi = new Indicator ("Fire Sensor", mw.GetX()+ mw.Width() + (int)(wi.Width()*4), (int)(mw.Height()/2));
+			 si = new Indicator ("Sprinkler Sensor", mw.GetX()+ mw.Width() + (int)(wi.Width()*4), (int)(mw.Height()/2));
 
 
 			mw.WriteMessage( "Registered with the message manager." );
@@ -138,13 +132,58 @@ class SecurityMonitor extends Thread
 				for ( int i = 0; i < qlen; i++ )
 				{
 					Msg = eq.GetMessage();
-
-					if ( Msg.GetMessageId() == 21 ) 
+					
+					// Received data from sensors
+					if ( Msg.GetMessageId() == 30 ) 
 					{
 						try
 						{
-							CurrentWindowAlarm = Integer.valueOf(Msg.GetMessage()).intValue();
-
+							SecurityMsg = String.valueOf(Msg.GetMessage());
+							// Write message to the message window and set alarm accordingly
+							// window
+							if (SecurityMsg.equalsIgnoreCase("W0")){
+								mw.WriteMessage("Window Status:: Safe");
+								PostSecurityAlarmStatus(em, "WA0");
+								wi.SetLampColorAndMessage("Window Safe", 1);
+							}
+							if (SecurityMsg.equalsIgnoreCase("W1")){
+								mw.WriteMessage("Window Status:: Broken");
+								PostSecurityAlarmStatus(em, "WA1");
+								wi.SetLampColorAndMessage("Window Breaks", 3);
+							}
+							// Door
+							if (SecurityMsg.equalsIgnoreCase("D0")){
+								mw.WriteMessage("Door Status:: Safe");
+								PostSecurityAlarmStatus(em, "DA0");
+								di.SetLampColorAndMessage("Door Safe", 1);
+							}
+							if (SecurityMsg.equalsIgnoreCase("D1")){
+								mw.WriteMessage("Door Status:: Broken");
+								PostSecurityAlarmStatus(em, "DA1");
+								di.SetLampColorAndMessage("Door Breaks", 3);
+							}
+							// Motion
+							if (SecurityMsg.equalsIgnoreCase("M0")){
+								mw.WriteMessage("Motion Status:: No motion");
+								PostSecurityAlarmStatus(em, "MA0");
+								mi.SetLampColorAndMessage("No motion", 1);
+							}
+							if (SecurityMsg.equalsIgnoreCase("M1")){
+								mw.WriteMessage("Motion Status:: Motion detected");
+								PostSecurityAlarmStatus(em, "MA1");
+								mi.SetLampColorAndMessage("Motion detected", 3);
+							}
+							// Fire
+							if (SecurityMsg.equalsIgnoreCase("F0")){
+								mw.WriteMessage("Fire Status:: No fire");
+								PostSecurityAlarmStatus(em, "FA0");
+								mi.SetLampColorAndMessage("No fire", 1);
+							}
+							if (SecurityMsg.equalsIgnoreCase("F1")){
+								mw.WriteMessage("Fire Status:: Fire detected");
+								PostSecurityAlarmStatus(em, "FA1");
+								mi.SetLampColorAndMessage("fire detected", 3);
+							}
 						} // try
 
 						catch( Exception e )
@@ -154,72 +193,72 @@ class SecurityMonitor extends Thread
 						} // catch
 
 					} // if
+					
+					if ( Msg.GetMessageId() == -25 ){
+						try
+						{
+							SecurityMsg = String.valueOf(Msg.GetMessage());
+							// Write message to the message window and set alarm accordingly
+							if (SecurityMsg.equalsIgnoreCase("WB0")){
+								wi.SetLampColorAndMessage("Window Disarmed", 0);
+							}
+						}
+						catch( Exception e )
+						{
+							mw.WriteMessage("Error reading window: " + e);
 
-					if ( Msg.GetMessageId() == 22 ) 
+						} // catch
+					}
+					
+					if ( Msg.GetMessageId() == -26 ){
+						try
+						{
+							SecurityMsg = String.valueOf(Msg.GetMessage());
+							// Write message to the message window and set alarm accordingly
+							if (SecurityMsg.equalsIgnoreCase("DB0")){
+								di.SetLampColorAndMessage("Door Disarmed", 0);
+							}
+						}
+						catch( Exception e )
+						{
+							mw.WriteMessage("Error reading window: " + e);
+
+						} // catch
+					}
+					
+					if ( Msg.GetMessageId() == -27 ){
+						try
+						{
+							SecurityMsg = String.valueOf(Msg.GetMessage());
+							// Write message to the message window and set alarm accordingly
+							if (SecurityMsg.equalsIgnoreCase("MB0")){
+								mi.SetLampColorAndMessage("Motion Disarmed", 0);
+							}
+						}
+						catch( Exception e )
+						{
+							mw.WriteMessage("Error reading window: " + e);
+
+						} // catch
+					}
+					if ( Msg.GetMessageId() == -28 )
 					{
 						try
 						{
-
-							CurrentDoorAlarm = Integer.valueOf(Msg.GetMessage()).intValue();
-
-						} // try
-
+							SecurityMsg = String.valueOf(Msg.GetMessage());
+							// Write message to the message window and set alarm accordingly
+							if (SecurityMsg.equalsIgnoreCase("FB0")){
+								fi.SetLampColorAndMessage("Fire Disarmed", 0);
+							}
+						}
 						catch( Exception e )
 						{
-							mw.WriteMessage("Error reading door: " + e);
+							mw.WriteMessage("Error reading window: " + e);
 
 						} // catch
 
 					} // if
 
-					if ( Msg.GetMessageId() == 23 ) 
-					{
-						try
-						{
-
-							CurrentMotionAlarm = Integer.valueOf(Msg.GetMessage()).intValue();
-
-						} // try
-
-						catch( Exception e )
-						{
-							mw.WriteMessage("Error reading motion: " + e);
-
-						} // catch
-
-					} // if
-					if ( Msg.GetMessageId() == 24 )
-					{
-						try
-						{
-
-							CurrentFireAlarm = Integer.valueOf(Msg.GetMessage()).intValue();
-
-						} // try
-
-						catch( Exception e )
-						{
-							mw.WriteMessage("Error reading motion: " + e);
-
-						} // catch
-
-					} // if
-					if ( Msg.GetMessageId() == 25 )
-					{
-						try
-						{
-
-							CurrentSprinkler = Integer.valueOf(Msg.GetMessage()).intValue();
-
-						} // try
-
-						catch( Exception e )
-						{
-							mw.WriteMessage("Error reading motion: " + e);
-
-						} // catch
-
-					} // if
 
 					// If the message ID == 99 then this is a signal that the simulation
 					// is to end. At this point, the loop termination flag is set to
@@ -256,71 +295,7 @@ class SecurityMonitor extends Thread
 
 				} // for
 
-				mw.WriteMessage("Window Alarm:: " + CurrentWindowAlarm + "Door Alarm:: " + CurrentDoorAlarm + "Motion Alarm:: " + CurrentMotionAlarm
-				+"Fire Alarm:: " + CurrentFireAlarm + "Sprinkler:: " + CurrentSprinkler );
-
-				// Check temperature and effect control as necessary
-
-				if (CurrentWindowAlarm  == 0) // window break is disarm
-				{
-					wi.SetLampColorAndMessage("window break is arm", 26);
-					ArmWindowBreak(ON);
-
-				} else {
-					
-					wi.SetLampColorAndMessage("window break is disarm", 26);
-					DisarmWindowBreak(ON);
-
-					
-				} // if
 				
-				if (CurrentDoorAlarm == 0)
-				{
-					di.SetLampColorAndMessage("door break is arm", 26); // door break is disarm
-					ArmDoorBreak(ON);
-
-				} else {
-
-					di.SetLampColorAndMessage("door break is disarm", 26);
-					DisarmDoorBreak(ON);
-					
-				} // if
-
-				if (CurrentMotionAlarm == 0)
-				{
-					mi.SetLampColorAndMessage("motion detection is on", 26); // motion detection is off
-					ArmMotionDetection(ON);
-
-				} else {
-
-					mi.SetLampColorAndMessage("motion detection is off", 26);
-					DisarmMotionDetection(ON);
-
-				} // if
-
-				if (CurrentFireAlarm == 0)
-				{
-					mi.SetLampColorAndMessage("fire detection is on", 26); // motion detection is off
-					ArmFireDetection(ON);
-
-				} else {
-
-					mi.SetLampColorAndMessage("fire detection is off", 26);
-					DisarmFireDetection(ON);
-
-				} // if
-
-				if (CurrentSprinkler == 0)
-				{
-					mi.SetLampColorAndMessage("sprinkler is on", 26); // motion detection is off
-					confirmSprinkler(ON);
-
-				} else {
-
-					mi.SetLampColorAndMessage("sprinkler is off", 26);
-					cancelSprinkler(ON);
-
-				} // if
 				// This delay slows down the sample rate to Delay milliseconds
 
 				try
@@ -385,7 +360,7 @@ class SecurityMonitor extends Thread
 
 		Message msg;
 
-		msg = new Message( (int) 99, "XXX" );
+		msg = new Message( 99, "XXX" );
 
 		// Here we send the message to the message manager.
 
@@ -403,20 +378,51 @@ class SecurityMonitor extends Thread
 
 	} // Halt
 
-	// raise window, door, motion alarm
+	
 
-	public void SetWindowBroken(int status )
+	public void ArmWindowBreak(boolean status )
 	{
 
-		Message msg;
+		Message msg = null;
 
-		if ( status == 1 )
+		if ( status )
 		{
-			msg = new Message( (int) 35, "wba1" );
+			msg = new Message( 25, "wb1" ); // arm
 
 		} else {
 
-			msg = new Message( (int) 35, "wba0" );
+			msg = new Message( 25, "wb0" ); // disarm
+
+		} // if
+
+		// Here we send the message to the message manager.
+
+		try
+		{
+			em.SendMessage( msg );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println("Error sending control message:: " + e);
+
+		} // catch
+
+	}
+	
+	public void ArmDoorBreak(boolean status )
+	{
+
+		Message msg = null;
+
+		if ( status)
+		{
+			msg = new Message( 26, "db1" ); // arm
+
+		} else{
+
+			msg = new Message( 26, "db0" ); // disarm
 
 		} // if
 
@@ -436,18 +442,18 @@ class SecurityMonitor extends Thread
 
 	}
 
-	public void StopWindowAlarm(int status )
+	public void ArmMotionDetection(boolean status )
 	{
 
-		Message msg;
+		Message msg = null;
 
-		if ( status == 1 )
+		if ( status )
 		{
-			msg = new Message( (int) 35, "wba0" );
+			msg = new Message( 27, "md1" ); // arm
 
 		} else {
 
-			msg = new Message( (int) 35, "wba1" );
+			msg = new Message( 27, "md0" ); // disarm
 
 		} // if
 
@@ -467,237 +473,18 @@ class SecurityMonitor extends Thread
 
 	}
 
-	public void SetDoorBroken(int status )
+	public void ArmFireDetection(boolean status )
 	{
 
-		Message msg;
+		Message msg = null;
 
-		if ( status == 1 )
+		if ( status )
 		{
-			msg = new Message( (int) 36, "dba1" );
+			msg = new Message( 28, "fd1" ); // arm
 
 		} else {
 
-			msg = new Message( (int) 36, "dba0" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
-	public void StopDoorAlarm(int status )
-	{
-
-		Message msg;
-
-		if ( status == 1 )
-		{
-			msg = new Message( (int) 36, "dba0" );
-
-		} else {
-
-			msg = new Message( (int) 36, "dba1" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
-	public void SetMotionDetection(int status )
-	{
-
-		Message msg;
-
-		if ( status == 1 )
-		{
-			msg = new Message( (int) 37, "ma1" );
-
-		} else {
-
-			msg = new Message( (int) 37, "ma0" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
-	public void StopMotionAlarm(int status )
-	{
-
-		Message msg;
-
-		if ( status == 1 )
-		{
-			msg = new Message( (int) 37, "ma0" );
-
-		} else {
-
-			msg = new Message( (int) 37, "ma1" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
-	/*
-	  Fire detection
-	 */
-	public void SetFireAlarm(int status )
-	{
-
-		Message msg;
-
-		if ( status == 1 )
-		{
-			msg = new Message( (int) 38, "fire1" );
-
-		} else {
-
-			msg = new Message( (int) 38, "fire0" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
-	public void StopFireAlarm(int status )
-	{
-
-		Message msg;
-
-		if ( status == 1 )
-		{
-			msg = new Message( (int) 38, "fire0" );
-
-		} else {
-
-			msg = new Message( (int) 38, "fire1" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
-	public void SetSprinkler(int status )
-	{
-
-		Message msg;
-
-		if ( status == 1 )
-		{
-			msg = new Message( (int) 39, "sprinkler1" );
-
-		} else {
-
-			msg = new Message( (int) 39, "sprinkler0" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-	public void StopSprinkler(int status )
-	{
-
-		Message msg;
-
-		if ( status == 1 )
-		{
-			msg = new Message( (int) 39, "sprinkler0" );
-
-		} else {
-
-			msg = new Message( (int) 39, "sprinkler1" );
+			msg = new Message( 28, "fd0" ); // disarm
 
 		} // if
 
@@ -718,23 +505,23 @@ class SecurityMonitor extends Thread
 	}
 
 	/**********
-	Window break alarm
+	Send window, door, and motion simulation data to the sensors
 	***********/
 
-
-	public void ArmWindowBreak( boolean ON )
+	
+	public void SendWindowData( int status )
 	{
 		// Here we create the message.
 
-		Message msg;
+		Message msg = null;
 
-		if ( ON )
+		if ( status == 1 )
 		{
-			msg = new Message( (int) 27, "wb1" );
+			msg = new Message( 25, "wb2" ); // window breaks
 
-		} else {
+		} else if(status == 0){
 
-			msg = new Message( (int) 27, "wb0" );
+			msg = new Message( 25, "wb3" ); // window safe
 
 		} // if
 
@@ -753,53 +540,20 @@ class SecurityMonitor extends Thread
 		} // catch
 
 	} 
-
-    public void DisarmWindowBreak( boolean ON )
+	
+	public void SendDoorData( int status )
 	{
 		// Here we create the message.
 
-		Message msg;
+		Message msg = null;
 
-		if ( ON )
+		if ( status == 1 )
 		{
-			msg = new Message( (int) 27, "wb0" );
+			msg = new Message( 26, "db2" ); // door breaks
 
-		} else {
+		} else if(status == 0) {
 
-			msg = new Message( (int) 27, "wb1" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
-
-	public void ArmDoorBreak( boolean ON )
-	{
-		// Here we create the message.
-
-		Message msg;
-
-		if ( ON )
-		{
-			msg = new Message( (int) 28, "db1" );
-
-		} else {
-
-			msg = new Message( (int) 28, "db0" );
+			msg = new Message( 26, "db3" ); // door safe
 
 		} // if
 
@@ -818,85 +572,19 @@ class SecurityMonitor extends Thread
 		} // catch
 
 	} 
-
-	public void DisarmDoorBreak( boolean ON )
+	
+	public void SendMotionData ( int status)
 	{
 		// Here we create the message.
 
-		Message msg;
-
-		if ( ON )
+		Message msg = null;
+		if(status == 1)
 		{
-			msg = new Message( (int) 28, "db0" );
+			msg = new Message( 27, "md2" ); // motion detected
 
-		} else {
+		} else if(status == 0) {
 
-			msg = new Message( (int) 28, "db1" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	} 
-
-
-	public void ArmMotionDetection( boolean ON )
-	{
-		// Here we create the message.
-
-		Message msg;
-
-		if ( ON )
-		{
-			msg = new Message( (int) 29, "m1" );
-
-		} else {
-
-			msg = new Message( (int) 29, "m0" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message::  " + e);
-
-		} // catch
-
-	} 
-
-	public void DisarmMotionDetection( boolean ON )
-	{
-		// Here we create the message.
-
-		Message msg;
-
-		if ( ON )
-		{
-			msg = new Message( (int) 29, "m0" );
-
-		} else {
-
-			msg = new Message( (int) 29, "m1" );
+			msg = new Message( 27, "md3" ); // no motion
 
 		} // if
 
@@ -916,19 +604,18 @@ class SecurityMonitor extends Thread
 
 	}
 
-	public void ArmFireDetection( boolean ON )
+	public void SendFireData ( int status)
 	{
 		// Here we create the message.
 
-		Message msg;
-
-		if ( ON )
+		Message msg = null;
+		if(status == 1)
 		{
-			msg = new Message( (int) 30, "f1" );
+			msg = new Message( 28, "fd2" ); // motion detected
 
-		} else {
+		} else if(status == 0) {
 
-			msg = new Message( (int) 30, "f0" );
+			msg = new Message( 28, "fd3" ); // no motion
 
 		} // if
 
@@ -948,19 +635,18 @@ class SecurityMonitor extends Thread
 
 	}
 
-	public void DisarmFireDetection( boolean ON )
+	public void SendSprinklerData ( int status)
 	{
 		// Here we create the message.
 
-		Message msg;
-
-		if ( ON )
+		Message msg = null;
+		if(status == 1)
 		{
-			msg = new Message( (int) 30, "f0" );
+			msg = new Message( 29, "sd2" ); // motion detected
 
-		} else {
+		} else if(status == 0) {
 
-			msg = new Message( (int) 30, "f1" );
+			msg = new Message( 29, "sd3" ); // no motion
 
 		} // if
 
@@ -980,69 +666,42 @@ class SecurityMonitor extends Thread
 
 	}
 
-	public void confirmSprinkler( boolean ON )
+	/***************************************************************************
+	* CONCRETE METHOD:: PostWindowState
+	* Purpose: This method posts the specified temperature value to the
+	* specified message manager. This method assumes an message ID of 1.
+	*
+	* Arguments: MessageManagerInterface ei - this is the messagemanger interface
+	*			 where the message will be posted.
+	*
+	*			 boolean state - this is the state of the window.
+	*
+	* Returns: none
+	*
+	* Exceptions: None
+	*
+	***************************************************************************/
+
+	static private void PostSecurityAlarmStatus(MessageManagerInterface ei, String State)
 	{
 		// Here we create the message.
-
-		Message msg;
-
-		if ( ON )
-		{
-			msg = new Message( (int) 31, "s1" );
-
-		} else {
-
-			msg = new Message( (int) 31, "s0" );
-
-		} // if
-
+		Message msg = new Message( (int) 35, State );
+		
 		// Here we send the message to the message manager.
 
 		try
 		{
-			em.SendMessage( msg );
+			ei.SendMessage( msg );
+			//System.out.println( "Sent Window Message" );
 
 		} // try
 
 		catch (Exception e)
 		{
-			System.out.println("Error sending control message::  " + e);
+			System.out.println( "Error Posting Window state:: " + e );
 
 		} // catch
 
-	}
-
-	public void cancelSprinkler( boolean ON )
-	{
-		// Here we create the message.
-
-		Message msg;
-
-		if ( ON )
-		{
-			msg = new Message( (int) 31, "s0" );
-
-		} else {
-
-			msg = new Message( (int) 31, "s1" );
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message::  " + e);
-
-		} // catch
-
-	}
-
+	} // PostWindowState
 
 } 
