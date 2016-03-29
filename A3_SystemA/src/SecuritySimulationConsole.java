@@ -1,16 +1,16 @@
 
 /******************************************************************************************************************
-* File:ECSConsole.java
+* File:SecuritySimulationConsole.java
 * Course: 17655
 * Project: Assignment 3
 * Copyright: Copyright (c) 2009 Carnegie Mellon University
 * Versions:
 *	1.0 February 2009 - Initial rewrite of original assignment 3 (ajl).
 *
-* Description: This class is the console for the museum environmental control system. This process consists of two
-* threads. The ECSMonitor object is a thread that is started that is responsible for the monitoring and control of
-* the museum environmental systems. The main thread provides a text interface for the user to change the temperature
-* and humidity ranges, as well as shut down the system.
+* Description: This class is the console for simulating the museum environmental control system. This process consists of two
+* threads. The Security monitor object is a thread that is started that is responsible for the monitoring and control of
+* the museum security systems. This thread provides an interface for user to initiate either window break, door break, or 
+* motion detection.
 *
 * Parameters: None
 *
