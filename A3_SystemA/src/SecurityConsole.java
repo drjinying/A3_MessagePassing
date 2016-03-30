@@ -25,6 +25,7 @@ public class SecurityConsole {
 		Termio UserInput = new Termio(); // Termio IO Object
 		boolean Done = false; // Main loop flag
 		String Option = null; // Menu choice from user
+		String Option2 = null;
 		Message Msg = null; // Message object
 		boolean Error = false; // Error flag
 		SecurityMonitor Monitor = null; // The environmental control system monitor
@@ -74,9 +75,9 @@ public class SecurityConsole {
 							System.out.println("\n 1. Arm Window Sensor ");
 							System.out.println("\n 2. Disarm Window Sensor");
 							System.out.println("\n 3. Go back ");
-							Option = UserInput.KeyboardReadString();
-							if (UserInput.IsNumber(Option)) {
-								switch (Option) {
+							Option2 = UserInput.KeyboardReadString();
+							if (UserInput.IsNumber(Option2)) {
+								switch (Option2) {
 								case "1":
 									// Call a method in the security monitor
 									// that will allow me to arm window sensor.
@@ -107,7 +108,7 @@ public class SecurityConsole {
 
 				//////////// option 2 ////////////
 				
-				if (Option.equals("2")) {
+				else if (Option.equals("2")) {
 					// Here we get the door alarm state
 					Error = true;
 						while (Error) {
@@ -115,9 +116,9 @@ public class SecurityConsole {
 							System.out.println("\n 1. Arm Door Sensor");
 							System.out.println("\n 2. Disarm Door Sensor");
 							System.out.println("\n 3. Go back");
-							Option = UserInput.KeyboardReadString();
-							if (UserInput.IsNumber(Option)) {
-								switch (Option) {
+							Option2 = UserInput.KeyboardReadString();
+							if (UserInput.IsNumber(Option2)) {
+								switch (Option2) {
 								case "1":
 									// Call a method in the security monitor
 									// that will allow me to arm door
@@ -144,7 +145,7 @@ public class SecurityConsole {
 						} // while
 				} // if
 
-				if (Option.equals("3")) {
+				else if (Option.equals("3")) {
 					// Here we get the motion sensor alarm state
 					Error = true;
 						while (Error) {
@@ -152,9 +153,9 @@ public class SecurityConsole {
 							System.out.println("\n 1. Arm Motion Detection Sensor ");
 							System.out.println("\n 2. Disarm Motion Detection Sensor");
 							System.out.println("\n 3. Go back ");
-							Option = UserInput.KeyboardReadString();
-							if (UserInput.IsNumber(Option)) {
-								switch (Option) {
+							Option2 = UserInput.KeyboardReadString();
+							if (UserInput.IsNumber(Option2)) {
+								switch (Option2) {
 								case "1":
 									// Call a method in the security monitor
 									// that will allow me to arm motion sensor
@@ -184,7 +185,7 @@ public class SecurityConsole {
 
 				//////////// option X ////////////
 
-				if (Option.equalsIgnoreCase("X")) {
+				else if (Option.equalsIgnoreCase("X")) {
 					// Here the user is done, so we set the Done flag and halt
 					// the environmental control system. The monitor provides a
 					// method

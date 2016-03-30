@@ -72,11 +72,11 @@ public class Indicator extends JFrame
 		
 		if (ScreenSize.width >= ScreenSize.height)
 		{
-			Height = (int)(ScreenSize.height * 0.1);
+			Height = (int)(ScreenSize.height * 0.7);
 
 		} else {
 
-			Height = (int)(ScreenSize.width * 0.1);
+			Height = (int)(ScreenSize.width * 0.7);
 
 		} // if
 
