@@ -20,12 +20,12 @@
 import MessagePackage.Message;
 import TermioPackage.Termio;
 
-public class SecuritySimulationConsole
-{
+public class SecuritySimulationConsole {
 	public static void main(String args[]) {
 		Termio UserInput = new Termio(); // Termio IO Object
 		boolean Done = false; // Main loop flag
 		String Option = null; // Menu choice from user
+		String Option2 = null; // Menu choice from user
 		Message Msg = null; // Message object
 		boolean Error = false; // Error flag
 		SecurityMonitor Monitor = null; // The environmental control system monitor
@@ -62,6 +62,7 @@ public class SecuritySimulationConsole
 				System.out.println("1. Window Alarm Simulator");
 				System.out.println("2. Door break Alarm Simulator");
 				System.out.println("3. Motion Detection Alarm Simulator");
+				System.out.println("4. Fire Alarm Simulator");
 				System.out.println("X: Stop System\n");
 				System.out.print("\n>>>> ");
 				Option = UserInput.KeyboardReadString();
@@ -75,11 +76,10 @@ public class SecuritySimulationConsole
 							System.out.println("\nSelect the alarm state ");
 							System.out.println("\n 1. Raise Window alarm ");
 							System.out.println("\n 2. Stop Window alarm");
-							System.out.println("\n 3. Fire Detection Alarm Simulator");
-							System.out.println("\n 4. Go back ");
-							Option = UserInput.KeyboardReadString();
-							if (UserInput.IsNumber(Option)) {
-								switch (Option) {
+							System.out.println("\n 3. Go back ");
+							Option2 = UserInput.KeyboardReadString();
+							if (UserInput.IsNumber(Option2)) {
+								switch (Option2) {
 								case "1":
 									// Call a method in the security monitor
 									// that will allow me to send window break simulation
@@ -120,9 +120,9 @@ public class SecuritySimulationConsole
 							System.out.println("\n 1. Raise Door break alarm ");
 							System.out.println("\n 2. Stop Door break alarm");
 							System.out.println("\n 3. Go back ");
-							Option = UserInput.KeyboardReadString();
-							if (UserInput.IsNumber(Option)) {
-								switch (Option) {
+							Option2 = UserInput.KeyboardReadString();
+							if (UserInput.IsNumber(Option2)) {
+								switch (Option2) {
 								case "1":
 									// Call a method in the security monitor
 									// that will allow me to send door break simulation
@@ -158,9 +158,9 @@ public class SecuritySimulationConsole
 							System.out.println("\n 1. Raise Motion Sensor Alarm ");
 							System.out.println("\n 2. Stop Motion Sensor Alarm");
 							System.out.println("\n 3. Go back ");
-							Option = UserInput.KeyboardReadString();
-							if (UserInput.IsNumber(Option)) {
-								switch (Option) {
+							Option2 = UserInput.KeyboardReadString();
+							if (UserInput.IsNumber(Option2)) {
+								switch (Option2) {
 								case "1":
 									// Call a method in the security monitor
 									// that will allow me to send motion detection simulation
@@ -188,51 +188,45 @@ public class SecuritySimulationConsole
 						} // while
 
 				} // if
-
+				
 				if (Option.equals("4")) {
 					// Here we get the motion sensor alarm state
 					Error = true;
-					while (Error) {
-						System.out.println("\nSelect the alarm state ");
-						System.out.println("\n 1. Raise Fire Sensor Alarm ");
-						System.out.println("\n 2. Stop Fire Sensor Alarm");
-						System.out.println("\n 3. Stop Sprinkler");
-						System.out.println("\n 4. Go back ");
-						Option = UserInput.KeyboardReadString();
-						if (UserInput.IsNumber(Option)) {
-							switch (Option) {
+						while (Error) {
+							System.out.println("\nSelect the alarm state ");
+							System.out.println("\n 1. Set the museum on fire");
+							System.out.println("\n 2. Fire Extinguished");
+							System.out.println("\n 3. Go back ");
+							Option2 = UserInput.KeyboardReadString();
+							if (UserInput.IsNumber(Option2)) {
+								switch (Option2) {
 								case "1":
 									// Call a method in the security monitor
-									// that will allow me to send motion detection simulation
-									// data to MotionSensor
+									// that will allow me to send fire detection simulation
+									// data to FireSensor
 									Monitor.SendFireData(1);
-									Monitor.SendSprinklerData(1);
 									Error = false;
 									break;
 								case "2":
 									// Call a method in the security monitor
-									// that will allow me to send motion safe simulation
-									// data to MotionSensor
-//									Monitor.SendSprinklerData(1);
+									// that will allow me to send no fire simulation
+									// data to FireSensor
 									Monitor.SendFireData(0);
 									Error = false;
 									break;
 								case "3":
-									Monitor.SendSprinklerData(0);
 									Error = false;
 									break;
 								default:
 									System.out.println("Not a valid number, please try again...");
 									break;
-							}
-						} else {
-							System.out.println("Not a valid number, please try again...");
-						} // if
-					} // while
+								}
+							} else {
+								System.out.println("Not a valid number, please try again...");
+							} // if
+						} // while
 
 				} // if
-
-
 
 				//////////// option X ////////////
 

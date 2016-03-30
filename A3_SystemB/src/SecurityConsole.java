@@ -181,43 +181,6 @@ public class SecurityConsole {
 						} // while
 
 				} // if
-				if (Option.equals("4")) {
-					// Here we get the motion sensor alarm state
-					Error = true;
-					while (Error) {
-						System.out.println("\nSelect the alarm state ");
-						System.out.println("\n 1. Arm Fire Detection Sensor ");
-						System.out.println("\n 2. Disarm Fire Detection Sensor");
-						System.out.println("\n 3. Go back ");
-						Option = UserInput.KeyboardReadString();
-						if (UserInput.IsNumber(Option)) {
-							switch (Option) {
-								case "1":
-									// Call a method in the security monitor
-									// that will allow me to arm fire sensor
-									Monitor.ArmFireDetection(true);
-									Error = false;
-									break;
-								case "2":
-									// Call a method in the security monitor
-									// that will allow me to disarm motion
-									// sensor.
-									Monitor.ArmFireDetection(false);
-									Error = false;
-									break;
-								case "3":
-									Error = false;
-									break;
-								default:
-									System.out.println("Not a valid number, please try again...");
-									break;
-							}
-						} else {
-							System.out.println("Not a valid number, please try again...");
-						} // if
-					} // while
-
-				} // if
 
 				//////////// option X ////////////
 

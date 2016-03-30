@@ -15,8 +15,7 @@ class SecurityMonitor extends Thread
 	Indicator wi;								// Window break indicator
 	Indicator di;								// Door break indicator
 	Indicator mi;								// Motion Detection indicator
-	Indicator fi;								// Fire Detection indicator
-	Indicator si;								// Sprinkler indicator
+	Indicator fi;								// Fire detection indicator
 
 
 	public SecurityMonitor()
@@ -81,8 +80,7 @@ class SecurityMonitor extends Thread
 			wi = new Indicator ("Window Sensor", mw.GetX()+ mw.Width(), (int)(mw.Height()/2));
 			di = new Indicator ("Door Sensor", mw.GetX()+ mw.Width() + (int)(wi.Width()*2), (int)(mw.Height()/2));
 			mi = new Indicator ("Motion Sensor", mw.GetX()+ mw.Width() + (int)(wi.Width()*4), (int)(mw.Height()/2));
-			 fi = new Indicator ("Fire Sensor", mw.GetX()+ mw.Width() + (int)(wi.Width()*4), (int)(mw.Height()/2));
-			 si = new Indicator ("Sprinkler Sensor", mw.GetX()+ mw.Width() + (int)(wi.Width()*4), (int)(mw.Height()/2));
+			fi = new Indicator ("Fire Sensor", mw.GetX()+ mw.Width() + (int)(wi.Width()*6), (int)(mw.Height()/2));
 
 
 			mw.WriteMessage( "Registered with the message manager." );
@@ -140,7 +138,6 @@ class SecurityMonitor extends Thread
 						{
 							SecurityMsg = String.valueOf(Msg.GetMessage());
 							// Write message to the message window and set alarm accordingly
-							// window
 							if (SecurityMsg.equalsIgnoreCase("W0")){
 								mw.WriteMessage("Window Status:: Safe");
 								PostSecurityAlarmStatus(em, "WA0");
@@ -151,7 +148,6 @@ class SecurityMonitor extends Thread
 								PostSecurityAlarmStatus(em, "WA1");
 								wi.SetLampColorAndMessage("Window Breaks", 3);
 							}
-							// Door
 							if (SecurityMsg.equalsIgnoreCase("D0")){
 								mw.WriteMessage("Door Status:: Safe");
 								PostSecurityAlarmStatus(em, "DA0");
@@ -162,7 +158,6 @@ class SecurityMonitor extends Thread
 								PostSecurityAlarmStatus(em, "DA1");
 								di.SetLampColorAndMessage("Door Breaks", 3);
 							}
-							// Motion
 							if (SecurityMsg.equalsIgnoreCase("M0")){
 								mw.WriteMessage("Motion Status:: No motion");
 								PostSecurityAlarmStatus(em, "MA0");
@@ -172,17 +167,6 @@ class SecurityMonitor extends Thread
 								mw.WriteMessage("Motion Status:: Motion detected");
 								PostSecurityAlarmStatus(em, "MA1");
 								mi.SetLampColorAndMessage("Motion detected", 3);
-							}
-							// Fire
-							if (SecurityMsg.equalsIgnoreCase("F0")){
-								mw.WriteMessage("Fire Status:: No fire");
-								PostSecurityAlarmStatus(em, "FA0");
-								mi.SetLampColorAndMessage("No fire", 1);
-							}
-							if (SecurityMsg.equalsIgnoreCase("F1")){
-								mw.WriteMessage("Fire Status:: Fire detected");
-								PostSecurityAlarmStatus(em, "FA1");
-								mi.SetLampColorAndMessage("fire detected", 3);
 							}
 						} // try
 
@@ -241,24 +225,33 @@ class SecurityMonitor extends Thread
 
 						} // catch
 					}
-					if ( Msg.GetMessageId() == -28 )
-					{
+					
+					if ( Msg.GetMessageId() == 10 ){
 						try
 						{
 							SecurityMsg = String.valueOf(Msg.GetMessage());
 							// Write message to the message window and set alarm accordingly
-							if (SecurityMsg.equalsIgnoreCase("FB0")){
-								fi.SetLampColorAndMessage("Fire Disarmed", 0);
+							if (SecurityMsg.equalsIgnoreCase("F0")){
+								mw.WriteMessage("Fire Status:: Safe");
+								PostFireAlarmStatus(em, "F0");
+								PostSprinklerStatus(em, "F0");
+								fi.SetLampColorAndMessage("No Fire", 1);
 							}
+							
+							if (SecurityMsg.equalsIgnoreCase("F1")){
+								mw.WriteMessage("Fire Status:: FIRE");
+								PostFireAlarmStatus(em, "F1");
+								PostSprinklerStatus(em, "F1"); // replace this line with the 10s logic
+								fi.SetLampColorAndMessage("FIRE", 3);
+							}
+							
 						}
 						catch( Exception e )
 						{
 							mw.WriteMessage("Error reading window: " + e);
 
 						} // catch
-
-					} // if
-
+					}
 
 					// If the message ID == 99 then this is a signal that the simulation
 					// is to end. At this point, the loop termination flag is set to
@@ -289,7 +282,6 @@ class SecurityMonitor extends Thread
 						di.dispose();
 						mi.dispose();
 						fi.dispose();
-						si.dispose();
 
 					} // if
 
@@ -473,37 +465,6 @@ class SecurityMonitor extends Thread
 
 	}
 
-	public void ArmFireDetection(boolean status )
-	{
-
-		Message msg = null;
-
-		if ( status )
-		{
-			msg = new Message( 28, "fd1" ); // arm
-
-		} else {
-
-			msg = new Message( 28, "fd0" ); // disarm
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message:: " + e);
-
-		} // catch
-
-	}
-
 	/**********
 	Send window, door, and motion simulation data to the sensors
 	***********/
@@ -602,8 +563,8 @@ class SecurityMonitor extends Thread
 
 		} // catch
 
-	}
-
+	} 
+	
 	public void SendFireData ( int status)
 	{
 		// Here we create the message.
@@ -611,11 +572,11 @@ class SecurityMonitor extends Thread
 		Message msg = null;
 		if(status == 1)
 		{
-			msg = new Message( 28, "fd2" ); // motion detected
+			msg = new Message( 10, "F1" ); // FIRE
 
 		} else if(status == 0) {
 
-			msg = new Message( 28, "fd3" ); // no motion
+			msg = new Message( 10, "F0" ); // no fire
 
 		} // if
 
@@ -633,38 +594,7 @@ class SecurityMonitor extends Thread
 
 		} // catch
 
-	}
-
-	public void SendSprinklerData ( int status)
-	{
-		// Here we create the message.
-
-		Message msg = null;
-		if(status == 1)
-		{
-			msg = new Message( 29, "sd2" ); // motion detected
-
-		} else if(status == 0) {
-
-			msg = new Message( 29, "sd3" ); // no motion
-
-		} // if
-
-		// Here we send the message to the message manager.
-
-		try
-		{
-			em.SendMessage( msg );
-
-		} // try
-
-		catch (Exception e)
-		{
-			System.out.println("Error sending control message::  " + e);
-
-		} // catch
-
-	}
+	} 
 
 	/***************************************************************************
 	* CONCRETE METHOD:: PostWindowState
@@ -703,5 +633,81 @@ class SecurityMonitor extends Thread
 		} // catch
 
 	} // PostWindowState
+	
+	/***************************************************************************
+	* CONCRETE METHOD:: PostFireAlarmStatus
+	* Purpose: This method posts the specified temperature value to the
+	* specified message manager. This method assumes an message ID of 1.
+	*
+	* Arguments: MessageManagerInterface ei - this is the messagemanger interface
+	*			 where the message will be posted.
+	*
+	*			 boolean state - this is the state of the window.
+	*
+	* Returns: none
+	*
+	* Exceptions: None
+	*
+	***************************************************************************/
+
+	static private void PostFireAlarmStatus(MessageManagerInterface ei, String State)
+	{
+		// Here we create the message.
+		Message msg = new Message( (int) 11, State );
+		
+		// Here we send the message to the message manager.
+
+		try
+		{
+			ei.SendMessage( msg );
+			//System.out.println( "Sent Window Message" );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println( "Error Posting Window state:: " + e );
+
+		} // catch
+
+	} // PostFireState
+	
+	/***************************************************************************
+	* CONCRETE METHOD:: PostFireAlarmStatus
+	* Purpose: This method posts the specified temperature value to the
+	* specified message manager. This method assumes an message ID of 1.
+	*
+	* Arguments: MessageManagerInterface ei - this is the messagemanger interface
+	*			 where the message will be posted.
+	*
+	*			 boolean state - this is the state of the window.
+	*
+	* Returns: none
+	*
+	* Exceptions: None
+	*
+	***************************************************************************/
+
+	static private void PostSprinklerStatus(MessageManagerInterface ei, String State)
+	{
+		// Here we create the message.
+		Message msg = new Message( (int) 12, State );
+		
+		// Here we send the message to the message manager.
+
+		try
+		{
+			ei.SendMessage( msg );
+			//System.out.println( "Sent Window Message" );
+
+		} // try
+
+		catch (Exception e)
+		{
+			System.out.println( "Error Posting Window state:: " + e );
+
+		} // catch
+
+	} // PostFireState
 
 } 
